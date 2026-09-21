@@ -10,6 +10,19 @@ SRCS = $(wildcard $(SRCDIR)/*.c)
 # "path substitute" reemplaza los src/*.c por build/*.o
 OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS)) $(OBJDIR)/lexer.o
 
+help:
+	@echo "Uso: make [target]"
+	@echo ""
+	@echo "Targets:"
+	@echo "  help	  		Muestra este mensaje"
+	@echo "  compile		Compila el proyecto y genera el binario bin/main"
+	@echo "  clean  		Elimina los archivos generados por make build"
+
+compile: $(BINDIR)/main
+
+clean:
+	rm -r $(BINDIR) $(OBJDIR)
+
 $(BINDIR)/main: $(OBJS) | $(BINDIR) # asegura que OBJS y BINDIR existen
   # $@ es el nombre del target, en este caso $(BINDIR)/main
 	gcc -o $@ $(OBJS) -I$(INCDIR) $(COPT) $(CLIB)
@@ -26,6 +39,3 @@ $(OBJDIR)/lexer.c: $(SRCDIR)/lexer.l | $(OBJDIR)
 
 $(OBJDIR) $(BINDIR):
 	mkdir -p $@
-
-clean:
-	rm -r $(BINDIR) $(OBJDIR)
