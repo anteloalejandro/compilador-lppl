@@ -12,7 +12,7 @@ sudo pacman -S base-devel
 
 **Ubuntu**
 ```bash
-sudo apt install -S build-essential
+sudo apt install -S build-essential flex bison
 ```
 
 ## Compilación
