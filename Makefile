@@ -28,16 +28,16 @@ rules:
 clean:
 	rm -r $(BINDIR) $(OBJDIR) 2>/dev/null
 
+# $@ es el nombre del target, en este caso $(BINDIR)/main
 $(BINDIR)/main: $(OBJS) | $(BINDIR) # asegura que OBJS y BINDIR existen
-	# $@ es el nombre del target, en este caso $(BINDIR)/main
 	gcc -o $@ $(OBJS) -I$(INCDIR) $(OPTS) $(LIBS)
 
+# para cada posible archivo src/*.c ($<), creamos un build/*.o ($@)
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
-	# para cada posible archivo src/*.c ($<), creamos un build/*.o ($@)
 	gcc -c -o $@ $< -I$(INCDIR) $(OPTS)
 
+# para cada posible archivo build/*.c ($<), por ejemplo lexer.c y rules.c, creamos un build/*.o ($@)
 $(OBJDIR)/%.o: $(OBJDIR)/%.c | $(OBJDIR)
-	# para cada posible archivo build/*.c ($<), por ejemplo lexer.c y rules.c, creamos un build/*.o ($@)
 	gcc -c -o $@ $< -I$(INCDIR) -I$(OBJDIR)/include $(OPTS)
 
 $(OBJDIR)/lexer.c: $(SRCDIR)/lexer.l $(OBJDIR)/rules.c | $(OBJDIR)
