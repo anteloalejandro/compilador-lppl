@@ -4,7 +4,7 @@
 #include "header.h"
 #include "rules.h"
 
-#define yield(x) { if (verbose) ECHO; }
+#define yield(x) { if (verbosidad) ECHO; }
 %}
 
 %option noinput
@@ -15,7 +15,7 @@ digito      [0-9]
 entero      {digito}+
 
 %%
-{delimitador}   { if (verbose) ECHO; }
+{delimitador}   { if (verbosidad) ECHO; }
 "+"             { yield (MAS_);      }
 "-"             { yield (MENOS_);    }
 "*"             { yield (POR_);      }

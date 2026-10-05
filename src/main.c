@@ -2,7 +2,7 @@
 #include <string.h>
 #include "header.h"
 
-bool verbose = FALSE;
+bool verbosidad = FALSE;
 int numErrores = 0;
 
 void yyerror(const char * msg) {
@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
 
   for (i=1; i<argc; ++i) {
     if (strcmp(argv[i], "-v")==0) {
-      verbose = TRUE;
+      verbosidad = TRUE;
       n++;
     }
   }
@@ -23,11 +23,15 @@ int main(int argc, char **argv) {
       fprintf(stderr, "El fichero '%s' no es valido\n", argv[n]) ;     
       fprintf(stderr, "Uso: %s [-v] fichero\n", argv[0]);
     } else {
-      yylex();
+      if (verbosidad) fprintf(stdout, "%3d.- ", yylineno);
+      yyparse();
+      if (numErrores > 0) {
+        fprintf(stderr, "\nNumero de errores:      %d\n", numErrores);
+      }
     }
   } else {
     fprintf(stderr, "Uso: %s [-v] fichero\n", argv[0]);
   }
 
-  return (0);
+  return 0;
 } 
