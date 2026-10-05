@@ -18,7 +18,6 @@ palabrareservada ("true"|"false"|"cte"|"int"|"bool"|"return"|"id"|"read"|"print"
 variable    {letra}+{{digito}*{letra}*}*
 /** SUGERENCIA: cambiar `variable` por `iden` */
 iden        {letra}+({digito}|{letra})*
-/** NOTA: "epsilon" → EPSILON_ es una definición temporal. Esto tiene que ser la palabra vacía */
 %%
 {delimitador}   { if (verbosidad) ECHO; }
 "+"             { yield (MAS_);      }
@@ -41,6 +40,7 @@ iden        {letra}+({digito}|{letra})*
 "!="            { yield (DESIGUAl_); }
 ">="            { yield (MAYORIGUAL_);}
 "<="            { yield (MENORIGUAL_);}
-"epsilon"       { yield (EPSILON_);  } 
+# palabra vacía
+""              { yield (EPSILON_);  } 
 .	       { yyerror("Caracter desconocido"); }
 %%
