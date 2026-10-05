@@ -14,32 +14,37 @@ help:
 	@echo "Uso: make [target]"
 	@echo ""
 	@echo "Targets:"
-	@echo "  help	  		Muestra este mensaje"
-	@echo "  compile		Compila el proyecto y genera el binario bin/main"
-	@echo "  clean  		Elimina los archivos generados por make build"
+	@echo "  help	  		   Muestra este mensaje"
+	@echo "  compile		   Compila el proyecto y genera el binario bin/main"
+	@echo "  rules         Compila el archivo de reglas, mostrando errores y avisos"
+	@echo "  clean  		   Elimina los archivos generados por make build"
 
 compile: $(BINDIR)/main
 
+.PHONY: rules
+rules:
+	$(MAKE) --always-make $(OBJDIR)/rules.c
+
 clean:
-	rm -r $(BINDIR) $(OBJDIR)
+	rm -r $(BINDIR) $(OBJDIR) 2>/dev/null
 
 $(BINDIR)/main: $(OBJS) | $(BINDIR) # asegura que OBJS y BINDIR existen
-  # $@ es el nombre del target, en este caso $(BINDIR)/main
+	# $@ es el nombre del target, en este caso $(BINDIR)/main
 	gcc -o $@ $(OBJS) -I$(INCDIR) $(OPTS) $(LIBS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
-  # para cada posible archivo src/*.c ($<), creamos un build/*.o ($@)
+	# para cada posible archivo src/*.c ($<), creamos un build/*.o ($@)
 	gcc -c -o $@ $< -I$(INCDIR) $(OPTS)
 
 $(OBJDIR)/%.o: $(OBJDIR)/%.c | $(OBJDIR)
-  # para cada posible archivo build/*.c ($<), por ejemplo lexer.c y rules.c, creamos un build/*.o ($@)
+	# para cada posible archivo build/*.c ($<), por ejemplo lexer.c y rules.c, creamos un build/*.o ($@)
 	gcc -c -o $@ $< -I$(INCDIR) -I$(OBJDIR)/include $(OPTS)
 
 $(OBJDIR)/lexer.c: $(SRCDIR)/lexer.l $(OBJDIR)/rules.c | $(OBJDIR)
 	flex -o $@ $<
 
 $(OBJDIR)/rules.c: $(SRCDIR)/rules.y | $(OBJDIR) $(OBJDIR)/include
-	bison -o $@ -d $<
+	bison -o $@ -d $< --verbose
 	mv $(OBJDIR)/rules.h $(OBJDIR)/include/rules.h
 
 $(OBJDIR) $(BINDIR) $(OBJDIR)/include:
