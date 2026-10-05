@@ -14,16 +14,21 @@ help:
 	@echo "Uso: make [target]"
 	@echo ""
 	@echo "Targets:"
-	@echo "  help	  		   Muestra este mensaje"
-	@echo "  compile		   Compila el proyecto y genera el binario bin/main"
-	@echo "  rules         Compila el archivo de reglas, mostrando errores y avisos"
-	@echo "  clean  		   Elimina los archivos generados por make build"
+	@echo "  help	  	 Muestra este mensaje"
+	@echo "  compile	 Compila el proyecto y genera el binario bin/main"
+	@echo "  rules		 Compila el archivo de reglas, mostrando errores y avisos"
+	@echo "  lexer		 Compila el lexer, mostrando errores y avisos (si los hay). También compila las reglas."
+	@echo "  clean		 Elimina los archivos generados por make build"
 
 compile: $(BINDIR)/main
 
 .PHONY: rules
 rules:
 	$(MAKE) --always-make $(OBJDIR)/rules.c
+
+.PHONY: lexer
+lexer:
+	$(MAKE) --always-make $(OBJDIR)/lexer.c
 
 clean:
 	rm -r $(BINDIR) $(OBJDIR) 2>/dev/null
