@@ -33,3 +33,9 @@ make clean
 ## Autores
 
 Alejandro Antelo Fashoro
+
+## Tareas
+
+- Alejandro 1: op
+- Alejandro 2 (Antelo): expre
+- César: inst
