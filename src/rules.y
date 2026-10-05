@@ -3,8 +3,10 @@
   extern int yylineno
 %}
 
-%token MAS_ MENOS_ POR_ DIV_ PARA_ PARC_ CTE_  
+%token MAS_ MENOS_ POR_ DIV_ PARA_ PARC_ CTE_
 %token CORA_ CORC_ ASIG_ IDEN_ // para expreXXX
+%token NOT_ MAYOR_ MENOR_ MAYORIGUAL_ MENORIGUAL_ IGUAL_ DESIGUAL_ 
+%token AND_ OR_ EPSILON_ 
 
 %%
 expre: expreLogic
@@ -43,13 +45,37 @@ expreSufi: const
          | IDEN_ PARA_ paramAct PARC_
          ;
 
+opUna: MAS_
+     | MENOS_
+     | NOT_
+     ;
+
+opMul: POR_
+     | DIV_
+     ;
+opAd: MAS_
+    | MENOS_
+    ;
+
+opRel: MAYOR_
+     | MENOR_
+     | MAYORIGUAL_
+     | MENORIGUAL_
+     ;
+
+opIgual: IGUAL_
+       | DESIGUAL_
+       ;
+
+opLogic: AND_
+       | OR_
+       ;
+
+listParamAct: expre
+            | expre, listParamAct
+            ;
+
 // BORRAR. Son definiciones temporales para que compilen las reglas
 paramAct: ;
 const: ;
-opMul: ;
-opRel: ;
-opIgual: ;
-opUna: ;
-opLogic: ;
-opAd: ;
 %%
