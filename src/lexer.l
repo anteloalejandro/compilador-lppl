@@ -40,7 +40,6 @@ iden        {letra}+({digito}|{letra})*
 "!="            { yield (DESIGUAl_); }
 ">="            { yield (MAYORIGUAL_);}
 "<="            { yield (MENORIGUAL_);}
-# palabra vacía
 ""              { yield (EPSILON_);  } 
 .	       { yyerror("Caracter desconocido"); }
 %%
