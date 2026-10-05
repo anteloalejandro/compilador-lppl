@@ -13,7 +13,9 @@
 delimitador [ \t\n]
 digito      [0-9]
 entero      {digito}+
-
+letra      [a-zA-Z\-]
+palabrareservada ("true"|"false"|"cte"|"int"|"bool"|"return"|"id"|"read"|"print"|"if"|"else"|"for") 
+variable    {letra}+{{digito}*{letra}*}*
 %%
 {delimitador}   { if (verbosidad) ECHO; }
 "+"             { yield (MAS_);      }
