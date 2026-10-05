@@ -16,14 +16,20 @@ entero      {digito}+
 letra      [a-zA-Z\-]
 palabrareservada ("true"|"false"|"cte"|"int"|"bool"|"return"|"id"|"read"|"print"|"if"|"else"|"for") 
 variable    {letra}+{{digito}*{letra}*}*
+// SUGERENCIA: cambiar `variable` por `iden`
+iden        {letra}+({digito}|{letra})*
 %%
 {delimitador}   { if (verbosidad) ECHO; }
 "+"             { yield (MAS_);      }
 "-"             { yield (MENOS_);    }
 "*"             { yield (POR_);      }
 "/"             { yield (DIV_);      }
-"("             { yield (APAR_);     }
-")"             { yield (CPAR_);     }
+"("             { yield (PARA_);     }
+")"             { yield (PARC_);     }
+"["             { yield (CORA_);     }
+"]"             { yield (CORC_);     }
+"="             { yield (ASIG_);     }
+{iden}          { yield (IDEN_);     }
 {entero}        { yield (CTE_);      }
 .	       { yyerror("Caracter desconocido"); }
 %%
