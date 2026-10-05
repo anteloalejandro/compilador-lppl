@@ -9,6 +9,11 @@ void yyerror(const char * msg) {
   numErrores++;  fflush(stdout);
   fprintf(stdout, "\nError en %d: %s\n", yylineno, msg);
 }
+
+int yyparse() {
+  return yylex();
+}
+
 int main(int argc, char **argv) {
   int i, n=1 ;
 
