@@ -8,7 +8,7 @@ LIBS = -lfl
 # busca todos los archivos .c de src/
 SRCS = $(wildcard $(SRCDIR)/*.c)
 # "path substitute" reemplaza los src/*.c por build/*.o
-OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS)) $(OBJDIR)/lexer.o
+OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS)) $(OBJDIR)/lexer.o $(OBJDIR)/rules.o
 
 help:
 	@echo "Uso: make [target]"

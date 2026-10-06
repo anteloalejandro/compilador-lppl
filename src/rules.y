@@ -1,6 +1,6 @@
 %{
   #include "header.h"
-  extern int yylineno
+  extern int yylineno;
 %}
 
 %token MAS_ MENOS_ POR_ DIV_ PARA_ PARC_ CTE_
