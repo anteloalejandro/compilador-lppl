@@ -7,6 +7,7 @@
 %token CORA_ CORC_ ASIG_ IDEN_ // para expreXXX
 %token NOT_ MAYOR_ MENOR_ MAYORIGUAL_ MENORIGUAL_ IGUAL_ DESIGUAL_ 
 %token AND_ OR_ EPSILON_ 
+%token COMA_
 
 %%
 expre: expreLogic
@@ -72,7 +73,7 @@ opLogic: AND_
        ;
 
 listParamAct: expre
-            | expre, listParamAct
+            | expre COMA_ listParamAct
             ;
 
 // BORRAR. Son definiciones temporales para que compilen las reglas
