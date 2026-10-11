@@ -41,6 +41,15 @@ iden        {letra}+({digito}|{letra})*
 ">="            { yield (MAYORIGUAL_);}
 "<="            { yield (MENORIGUAL_);}
 ","             { yield (COMA_); }
+";"             { yield (PUNTCOMA_); }
 ""              { yield (EPSILON_);  } 
+"for"           { yield (FOR_);      }
+"if"            { yield (IF_);       }
+"else"          { yield (ELSE_);     }
+"read"          {yield  (READ_);     }
+"print"         {yield  (PRINT_);    }
+"GREATER"       {yield  (GREATER_);  } 
+"EQUAL"         {yield  (EQUAL_);    }
+"LESS"          {yield  (LESS_);     }
 .	       { yyerror("Caracter desconocido"); }
 %%

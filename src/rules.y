@@ -5,11 +5,39 @@
 
 %token MAS_ MENOS_ POR_ DIV_ PARA_ PARC_ CTE_
 %token CORA_ CORC_ ASIG_ IDEN_ // para expreXXX
-%token NOT_ MAYOR_ MENOR_ MAYORIGUAL_ MENORIGUAL_ IGUAL_ DESIGUAL_ 
-%token AND_ OR_ EPSILON_ 
+%token NOT_ MAYOR_ MENOR_ MAYORIGUAL_ MENORIGUAL_ IGUAL_ DESIGUAL_ GREATER_ EQUAL_ LESS_
+%token AND_ OR_ EPSILON_ PUNTCOMA_
+%token FOR_ IF_ ELSE_ READ_ PRINT_ 
 %token COMA_
 
 %%
+Less: LESS_ inst
+     ;
+
+Equal: EQUAL_ inst
+     ;
+
+Greater: GREATER_ inst
+     ;
+
+instExpre: expre PUNTCOMA_
+     | PUNTCOMA_
+     ;
+
+instEntSal: READ_ PARA_ IDEN_ PARC_ PUNTCOMA_
+     | PRINT_ PARA_ expre PARC_ PUNTCOMA_
+     ;
+
+instSelec: IF_ PARA_ expre PARC_ inst ELSE_ inst
+     ;
+
+instIter: FOR_ PARA_ expreOP PUNTCOMA_ expre PUNTCOMA_ expreOP PARC_ inst
+     ;
+
+expreOP: EPSILON_
+     | expre
+     ;
+
 expre: expreLogic
      | IDEN_ ASIG_ expre
      | IDEN_ CORA_ expre CORC_ ASIG_ expre
