@@ -28,6 +28,8 @@ iden        {letra}+({digito}|{letra})*
 ")"             { yield (PARC_);     }
 "["             { yield (CORA_);     }
 "]"             { yield (CORC_);     }
+"{"             { yield (LLAVA_);    }
+"}"             { yield (LLAVC_);    }
 "="             { yield (ASIG_);     }
 {iden}          { yield (IDEN_);     }
 {entero}        { yield (CTE_);      }
@@ -51,5 +53,6 @@ iden        {letra}+({digito}|{letra})*
 "GREATER"       {yield  (GREATER_);  } 
 "EQUAL"         {yield  (EQUAL_);    }
 "LESS"          {yield  (LESS_);     }
+"SWITCH"        {yield  (SWITCH_);   }
 .	       { yyerror("Caracter desconocido"); }
 %%
