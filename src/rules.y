@@ -16,83 +16,84 @@
 
 
 programa: listDecla
-		;
+        ;
 
 listDecla: decla
-		 | listDecla decla
+         | listDecla decla
+         ;
 
 decla: declaVar
-	 | declaFunc
-	 ;
+     | declaFunc
+     ;
 
 const: CTE_
-	 | TRUE_
-	 | FALSE_
-	 ;
+     | TRUE_
+     | FALSE_
+     ;
 
 tipoSimp: BOOL_
-		| INT_
-		;
+        | INT_
+        ;
 
 declaVar: tipoSimp IDEN_ PUNTCOMA_
-		| tipoSimp IDEN_ ASIG_ CTE_ PUNTCOMA_
-		| tipoSimp IDEN_ CORA_ CTE_ CORC_
-		;
+        | tipoSimp IDEN_ ASIG_ CTE_ PUNTCOMA_
+        | tipoSimp IDEN_ CORA_ CTE_ CORC_
+        ;
 
 declaVarLocal: 
-		   | declaVarLocal declaVar
-		   ;
+             | declaVarLocal declaVar
+             ;
 
 listParamForm: tipoSimp IDEN_
-			| tipoSimp IDEN_ COMA_ listParamForm
-			;
+             | tipoSimp IDEN_ COMA_ listParamForm
+             ;
 
 paramForm:
-	    | listParamForm
-	    ;
+         | listParamForm
+         ;
 
 bloque: LLAVA_ declaVarLocal listInst RETURN_ expre LLAVC_
 
 declaFunc: tipoSimp IDEN_ PARA_ paramForm PARC_ bloque
-		 ;
+         ;
 
 listInst:
         | listInst inst
         ;
 
 inst: LLAVA_ listInst LLAVC_
-     | instExpre
-     | instEntSal
-     | instSelec
-     | instIter
-     | instSwitch
-     ;
+    | instExpre
+    | instEntSal
+    | instSelec
+    | instIter
+    | instSwitch
+    ;
 
 instSwitch: SWITCH_ IDEN_ LLAVA_ Less Equal Greater LLAVC_
-     ;
+          ;
 
 Less: LESS_ inst
-     ;
+    ;
 
 Equal: EQUAL_ inst
      ;
 
 Greater: GREATER_ inst
-     ;
+       ;
 
 instExpre: expre PUNTCOMA_
-     | PUNTCOMA_
-     ;
+         | PUNTCOMA_
+         ;
 
 instEntSal: READ_ PARA_ IDEN_ PARC_ PUNTCOMA_
-     | PRINT_ PARA_ expre PARC_ PUNTCOMA_
-     ;
+          | PRINT_ PARA_ expre PARC_ PUNTCOMA_
+          ;
 
 instSelec: IF_ PARA_ expre PARC_ inst ELSE_ inst
-     ;
+         ;
 
 instIter: FOR_ PARA_ expreOP PUNTCOMA_ expre PUNTCOMA_ expreOP PARC_ inst
-     ;
+        ;
 
 expreOP:
        | expre
@@ -112,8 +113,8 @@ expreIgual: expreRel
           ;
 
 expreRel: expreAd
-       | expreRel opRel expreAd
-       ;
+        | expreRel opRel expreAd
+        ;
 
 expreAd: expreMul
        | expreAd opAd expreMul
@@ -133,6 +134,14 @@ expreSufi: const
          | IDEN_ CORA_ expre CORC_
          | IDEN_ PARA_ paramAct PARC_
          ;
+
+listParamAct: expre
+            | expre COMA_ listParamAct
+            ;
+
+paramAct:
+        | listParamAct
+        ;
 
 opUna: MAS_
      | MENOS_
@@ -159,12 +168,4 @@ opIgual: IGUAL_
 opLogic: AND_
        | OR_
        ;
-
-listParamAct: expre
-            | expre COMA_ listParamAct
-            ;
-
-// BORRAR. Son definiciones temporales para que compilen las reglas
-paramAct: ;
-const: ;
 %%
