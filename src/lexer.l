@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "header.h"
-#include "rules.h" /* archivo fantasma - si se elimina esta línea colapsa la economía de Sudán*/
+/* Archivo generado a partir de rules.y, contiene los tokens que vamos a usar */
+#include "rules.h"
 
 #define yield(x) { if (verbosidad) ECHO; }
 %}
@@ -13,13 +14,12 @@
 comentario	//.*\n
 delimitador [ \t\n]+
 digito      [0-9]
-entero		{digito}+
-real      	{digito}*,{digito}+
-constante	{entero}|{real}
+entero      {digito}+
+/* 28 28. ,55 28,55 (asumo que 28. es 28,) */
+real        (,{entero}|{entero},{entero}?)
+/* "... el símbolo cte, que representa una constante numérica entera sin signo..." */
+constante   {entero}
 letra      	[a-zA-Z\-]
-/* variable    {letra}+{{digito}*{letra}*}* */
-/** SUGERENCIA: cambiar `variable` por `iden` */
-/* sugerencia aceptada boss */
 iden        {letra}+({digito}|{letra})*
 
 %%
@@ -50,11 +50,11 @@ iden        {letra}+({digito}|{letra})*
 ","             { yield (COMA_); 	 }
 ";"             { yield (PUNTCOMA_); }
 ""              { yield (EPSILON_);  } 
-"true"			{ yield (TRUE_);	 }
-"false"			{ yield (FALSE_);	 }
-"int"			{ yield (INT_)		 }
-"bool"			{ yield (BOOL_)		 }
-"return"		{ yield (RETURN_)	 }
+"true"			    { yield (TRUE_);	 }
+"false"			    { yield (FALSE_);	 }
+"int"			      { yield (INT_)		 }
+"bool"			    { yield (BOOL_)		 }
+"return"		    { yield (RETURN_)	 }
 "for"           { yield (FOR_);      }
 "if"            { yield (IF_);       }
 "else"          { yield (ELSE_);     }
@@ -64,5 +64,5 @@ iden        {letra}+({digito}|{letra})*
 "EQUAL"         { yield  (EQUAL_);   }
 "LESS"          { yield  (LESS_);    }
 "SWITCH"        { yield  (SWITCH_);  }
-.	       		{ yyerror("Caracter desconocido"); }
+.	       		    { yyerror("Caracter desconocido"); }
 %%
