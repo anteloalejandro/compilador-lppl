@@ -7,10 +7,54 @@
 %token CORA_ CORC_ ASIG_ IDEN_ LLAVA_ LLAVC_// para expreXXX
 %token NOT_ MAYOR_ MENOR_ MAYORIGUAL_ MENORIGUAL_ IGUAL_ DESIGUAL_ GREATER_ EQUAL_ LESS_
 %token AND_ OR_ EPSILON_ PUNTCOMA_
+%token FALSE_ TRUE_ INT_ BOOL_
 %token FOR_ IF_ ELSE_ READ_ PRINT_ SWITCH_
 %token COMA_ 
+/* lo de separarlo por lineas sigue algún criterio...? */
 
 %%
+
+
+programa: listDecla
+		;
+
+listDecla: decla
+		 | listDecla decla
+
+decla: declaVar
+	 | declaFunc
+	 ;
+
+const: _CTE
+	 | _TRUE
+	 | _FALSE
+	 :
+
+tipoSimp: _BOOL
+		| _INT
+		;
+
+declaVar: tipoSimp _IDEN _PUNTCOMA
+		| tipoSimp _IDEN _ASIG _CTE _PUNTCOMA
+		| tipoSimp _IDEN _CORA _CTE _CORC
+		;
+
+declaVarLocal: EPSILON_
+			| declaVarLocal declaVar
+			;
+
+listParamForm: tipoSimp _IDEN
+			| tipoSimp _IDEN _COMA listParamForm
+			;
+
+paramForm: EPSILON_
+		| listParamForm
+		;
+
+bloque: _LLAVA declaVarLocal listInst _RETURN expre _LLAVC
+
+declaFunc: tipoSimp _IDEN _PARA paramForm _PARC bloque
+		 ;
 
 listInst: EPSILON_
      | listInst inst

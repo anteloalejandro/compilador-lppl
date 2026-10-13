@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "header.h"
-#include "rules.h"
+#include "rules.h" /* archivo fantasma - si se elimina esta línea colapsa la economía de Sudán*/
 
 #define yield(x) { if (verbosidad) ECHO; }
 %}
@@ -10,16 +10,23 @@
 %option noinput
 %option nounput
 %option yylineno
-delimitador [ \t\n]
+comentario	//.*\n
+delimitador [ \t\n]+
 digito      [0-9]
-entero      {digito}+
-letra      [a-zA-Z\-]
-palabrareservada ("true"|"false"|"cte"|"int"|"bool"|"return"|"id"|"read"|"print"|"if"|"else"|"for")
-variable    {letra}+{{digito}*{letra}*}*
+entero		{digito}+
+real      	{digito}*,{digito}+
+constante	{entero}|{real}
+letra      	[a-zA-Z\-]
+/* variable    {letra}+{{digito}*{letra}*}* */
 /** SUGERENCIA: cambiar `variable` por `iden` */
+/* sugerencia aceptada boss */
 iden        {letra}+({digito}|{letra})*
+
 %%
 {delimitador}   { if (verbosidad) ECHO; }
+{comentario}   	{ if (verbosidad) ECHO; }
+{iden}          { yield (IDEN_);     }
+{constante}   	{ yield (CTE_);      }
 "+"             { yield (MAS_);      }
 "-"             { yield (MENOS_);    }
 "*"             { yield (POR_);      }
@@ -31,8 +38,6 @@ iden        {letra}+({digito}|{letra})*
 "{"             { yield (LLAVA_);    }
 "}"             { yield (LLAVC_);    }
 "="             { yield (ASIG_);     }
-{iden}          { yield (IDEN_);     }
-{entero}        { yield (CTE_);      }
 "!"             { yield (NOT_);      }
 "&&"            { yield (AND_);      }
 "||"            { yield (OR_);       }
@@ -42,17 +47,22 @@ iden        {letra}+({digito}|{letra})*
 "!="            { yield (DESIGUAl_); }
 ">="            { yield (MAYORIGUAL_);}
 "<="            { yield (MENORIGUAL_);}
-","             { yield (COMA_); }
+","             { yield (COMA_); 	 }
 ";"             { yield (PUNTCOMA_); }
 ""              { yield (EPSILON_);  } 
+"true"			{ yield (TRUE_);	 }
+"false"			{ yield (FALSE_);	 }
+"int"			{ yield (INT_)		 }
+"bool"			{ yield (BOOL_)		 }
+"return"		{ yield (RETURN_)	 }
 "for"           { yield (FOR_);      }
 "if"            { yield (IF_);       }
 "else"          { yield (ELSE_);     }
-"read"          {yield  (READ_);     }
-"print"         {yield  (PRINT_);    }
-"GREATER"       {yield  (GREATER_);  } 
-"EQUAL"         {yield  (EQUAL_);    }
-"LESS"          {yield  (LESS_);     }
-"SWITCH"        {yield  (SWITCH_);   }
-.	       { yyerror("Caracter desconocido"); }
+"read"          { yield  (READ_);    }
+"print"         { yield  (PRINT_);   }
+"GREATER"       { yield  (GREATER_); } 
+"EQUAL"         { yield  (EQUAL_);   }
+"LESS"          { yield  (LESS_);    }
+"SWITCH"        { yield  (SWITCH_);  }
+.	       		{ yyerror("Caracter desconocido"); }
 %%

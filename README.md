@@ -33,6 +33,7 @@ make clean
 ## Autores
 
 Alejandro Antelo Fashoro
+Carlos Nácher Abeledo
 
 ## Tareas
 
