@@ -11,7 +11,8 @@
 %option noinput
 %option nounput
 %option yylineno
-comentario	//.*\n
+
+comentario  "//".*\n
 delimitador [ \t\n]+
 digito      [0-9]
 entero      {digito}+
@@ -19,14 +20,31 @@ entero      {digito}+
 real        (,{entero}|{entero},{entero}?)
 /* "... el símbolo cte, que representa una constante numérica entera sin signo..." */
 constante   {entero}
-letra      	[a-zA-Z\-]
-iden        {letra}+({digito}|{letra})*
+letra       [a-zA-Z\-]
+iden        [a-zA-Z]+({digito}|{letra})*
 
+/* NOTA: Las palabras clave DEBEN ir antes para hacer matching primero */
 %%
+"true"          { yield (TRUE_);     }
+"false"         { yield (FALSE_);    }
+"int"           { yield (INT_);      }
+"bool"          { yield (BOOL_);     }
+"return"        { yield (RETURN_);   }
+"for"           { yield (FOR_);      }
+"if"            { yield (IF_);       }
+"else"          { yield (ELSE_);     }
+"read"          { yield  (READ_);    }
+"print"         { yield  (PRINT_);   }
+"GREATER"       { yield  (GREATER_); } 
+"EQUAL"         { yield  (EQUAL_);   }
+"LESS"          { yield  (LESS_);    }
+"SWITCH"        { yield  (SWITCH_);  }
+
 {delimitador}   { if (verbosidad) ECHO; }
-{comentario}   	{ if (verbosidad) ECHO; }
+{comentario}    { if (verbosidad) ECHO; }
 {iden}          { yield (IDEN_);     }
-{constante}   	{ yield (CTE_);      }
+{constante}     { yield (CTE_);      }
+
 "+"             { yield (MAS_);      }
 "-"             { yield (MENOS_);    }
 "*"             { yield (POR_);      }
@@ -47,23 +65,7 @@ iden        {letra}+({digito}|{letra})*
 "!="            { yield (DESIGUAl_); }
 ">="            { yield (MAYORIGUAL_);}
 "<="            { yield (MENORIGUAL_);}
-","             { yield (COMA_); 	 }
+","             { yield (COMA_);   }
 ";"             { yield (PUNTCOMA_); }
-""              { yield (EPSILON_);  } 
-"true"			    { yield (TRUE_);	 }
-"false"			    { yield (FALSE_);	 }
-"int"			      { yield (INT_)		 }
-"bool"			    { yield (BOOL_)		 }
-"return"		    { yield (RETURN_)	 }
-"for"           { yield (FOR_);      }
-"if"            { yield (IF_);       }
-"else"          { yield (ELSE_);     }
-"read"          { yield  (READ_);    }
-"print"         { yield  (PRINT_);   }
-"return"        { yield (RETURN_);   }
-"GREATER"       { yield  (GREATER_); } 
-"EQUAL"         { yield  (EQUAL_);   }
-"LESS"          { yield  (LESS_);    }
-"SWITCH"        { yield  (SWITCH_);  }
-.	       		    { yyerror("Caracter desconocido"); }
+.               { yyerror("Caracter desconocido"); }
 %%
