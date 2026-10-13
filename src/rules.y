@@ -3,14 +3,38 @@
   extern int yylineno;
 %}
 
-%token MAS_ MENOS_ POR_ DIV_ PARA_ PARC_ CTE_
-%token CORA_ CORC_ ASIG_ IDEN_ LLAVA_ LLAVC_// para expreXXX
-%token NOT_ MAYOR_ MENOR_ MAYORIGUAL_ MENORIGUAL_ IGUAL_ DESIGUAL_ GREATER_ EQUAL_ LESS_
-%token AND_ OR_ PUNTCOMA_
+// CONSTANTES
 %token FALSE_ TRUE_ INT_ BOOL_
-%token FOR_ IF_ ELSE_ READ_ PRINT_ SWITCH_
-%token COMA_ RETURN_
-/* lo de separarlo por lineas sigue algún criterio...? */
+
+// OPERADORES ARITMÉTICOS
+%token MAS_ MENOS_ POR_ DIV_
+
+// OPERADORES LÓGICOS
+%token MAYOR_ MENOR_ MAYORIGUAL_ MENORIGUAL_ IGUAL_ DESIGUAL_
+%token NOT_ AND_ OR_
+
+// OTROS OPERADORES
+%token ASIG_
+
+// PARÉNTESIS
+%token PARA_ PARC_
+// CORCHETES
+%token CORA_ CORC_
+// LLAVES
+%token LLAVA_ LLAVC_
+
+// ESTRUCTURAS DE CONTROL
+%token FOR_ IF_ ELSE_ RETURN_
+
+// SWITCH
+%token SWITCH_ GREATER_ EQUAL_ LESS_
+
+// FUNCIONES BUILT-IN
+%token READ_ PRINT_ 
+
+// TOKENS MISCELÁNEOS
+%token CTE_ IDEN_
+%token PUNTCOMA_ COMA_ 
 
 %%
 
