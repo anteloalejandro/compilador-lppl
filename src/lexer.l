@@ -60,6 +60,7 @@ iden        {letra}+({digito}|{letra})*
 "else"          { yield (ELSE_);     }
 "read"          { yield  (READ_);    }
 "print"         { yield  (PRINT_);   }
+"return"        { yield (RETURN_);   }
 "GREATER"       { yield  (GREATER_); } 
 "EQUAL"         { yield  (EQUAL_);   }
 "LESS"          { yield  (LESS_);    }

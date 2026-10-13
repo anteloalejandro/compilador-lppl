@@ -9,7 +9,7 @@
 %token AND_ OR_ EPSILON_ PUNTCOMA_
 %token FALSE_ TRUE_ INT_ BOOL_
 %token FOR_ IF_ ELSE_ READ_ PRINT_ SWITCH_
-%token COMA_ 
+%token COMA_ RETURN_
 /* lo de separarlo por lineas sigue algún criterio...? */
 
 %%
@@ -25,35 +25,35 @@ decla: declaVar
 	 | declaFunc
 	 ;
 
-const: _CTE
-	 | _TRUE
-	 | _FALSE
-	 :
+const: CTE_
+	 | TRUE_
+	 | FALSE_
+	 ;
 
-tipoSimp: _BOOL
-		| _INT
+tipoSimp: BOOL_
+		| INT_
 		;
 
-declaVar: tipoSimp _IDEN _PUNTCOMA
-		| tipoSimp _IDEN _ASIG _CTE _PUNTCOMA
-		| tipoSimp _IDEN _CORA _CTE _CORC
+declaVar: tipoSimp IDEN_ PUNTCOMA_
+		| tipoSimp IDEN_ ASIG_ CTE_ PUNTCOMA_
+		| tipoSimp IDEN_ CORA_ CTE_ CORC_
 		;
 
 declaVarLocal: EPSILON_
 			| declaVarLocal declaVar
 			;
 
-listParamForm: tipoSimp _IDEN
-			| tipoSimp _IDEN _COMA listParamForm
+listParamForm: tipoSimp IDEN_
+			| tipoSimp IDEN_ COMA_ listParamForm
 			;
 
 paramForm: EPSILON_
 		| listParamForm
 		;
 
-bloque: _LLAVA declaVarLocal listInst _RETURN expre _LLAVC
+bloque: LLAVA_ declaVarLocal listInst RETURN_ expre LLAVC_
 
-declaFunc: tipoSimp _IDEN _PARA paramForm _PARC bloque
+declaFunc: tipoSimp IDEN_ PARA_ paramForm PARC_ bloque
 		 ;
 
 listInst: EPSILON_
