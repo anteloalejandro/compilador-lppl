@@ -5,7 +5,7 @@
 /* Archivo generado a partir de rules.y, contiene los tokens que vamos a usar */
 #include "rules.h"
 
-#define yield(x) { if (verbosidad) ECHO; }
+#define yield(x) { if (verbosidad) ECHO; return (x); }
 %}
 
 %option noinput
@@ -62,7 +62,7 @@ iden        [a-zA-Z]+({digito}|{letra})*
 ">"             { yield (MAYOR_);    }
 "<"             { yield (MENOR_);    }
 "=="            { yield (IGUAL_);    }
-"!="            { yield (DESIGUAl_); }
+"!="            { yield (DESIGUAL_); }
 ">="            { yield (MAYORIGUAL_);}
 "<="            { yield (MENORIGUAL_);}
 ","             { yield (COMA_);   }
