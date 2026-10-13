@@ -77,6 +77,7 @@ paramForm:
          ;
 
 bloque: LLAVA_ declaVarLocal listInst RETURN_ expre LLAVC_
+      ;
 
 declaFunc: tipoSimp IDEN_ PARA_ paramForm PARC_ bloque
          ;
