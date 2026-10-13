@@ -37,8 +37,6 @@
 %token PUNTCOMA_ COMA_ 
 
 %%
-
-
 programa: listDecla
         ;
 
@@ -76,7 +74,7 @@ paramForm:
          | listParamForm
          ;
 
-bloque: LLAVA_ declaVarLocal listInst RETURN_ expre LLAVC_
+bloque: LLAVA_ declaVarLocal listInst RETURN_ expre PUNTCOMA_ LLAVC_
       ;
 
 declaFunc: tipoSimp IDEN_ PARA_ paramForm PARC_ bloque
