@@ -12,6 +12,9 @@ OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS)) $(OBJDIR)/lexer.o $(OBJ
 # archivos de test (hasta 3 niveles de anidación)
 TESTS = $(wildcard tests/* tests/*/* tests/*/*/*)
 
+# haz que si un comando falle, el error se propague por las tuberías
+.SHELLFLAGS = -o pipefail -c
+
 help:
 	@echo "Uso: make [target]"
 	@echo ""
