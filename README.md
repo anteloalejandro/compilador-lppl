@@ -64,3 +64,14 @@ Además, si se espera que el test no falle y sí falla, se mostrará el mensaje 
 - Alejandro Antelo Fashoro
 - César Marqués Jiménez
 - Carlos Nácher Abeledo
+
+## Notas
+
+Tenemos problemitas. Resulta que hay ambigüedades en el documento que nos resolverán en algún momento. Notablemente:
+
+- Las palabras clave, a priori, son en minúscula. Esto incluye las que están explícitamente definidas en mayúscula como `SWITCH`.
+- Las constantes dice en un sitio que son enteras, y en otro que son reales. Aparente son reales. Ponerlas como reales tal y como indica en el PDF rompe básicamente todos los tests, por la gracieta de que usa comas en lugar de puntos (por ejemplo, se confunde en las listas de parámetros de las funcioens).
+- El PDF indica que los símbolos de las constantes (+1, -1) no forman parte de la constante. Pero parece ser que tienen que poder ponerse, aunque no está definido en ningún lugar cómo.
+- Tenemos que tener en cuenta que, como los identificadores pueden llevar `-`, es posible que no podamos diferenciar entre restas entre identificadores y un identificador separado por `-` (a-b puede ser la resta `a - b` o un identificador `a-b`).
+
+Muchos tests, aplicando preventivamente estos cambios... Petan.
