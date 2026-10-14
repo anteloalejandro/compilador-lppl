@@ -78,11 +78,15 @@ Muchos tests, aplicando preventivamente estos cambios... Petan.
 
 ### Ejemplos
 
+**Reales vs parámetros**
+
+Por culpa de ambigüedad entre `listParamAct` (que usa comas para separar parámetros) y la definición de las constantes reales (que usa comas para los decimales).
+
 ```bash
 # NO FUNCIONA
-echo "int main() { suma(a,2); return 0; }"
+echo "int main() { suma(a,2); return 0; }" | ./bin/main /dev/stdin
 
 # FUNCIONA (espacio añadido)
 # Parece que el espacio elimina la ambigüedad entre IDEN(a) COMA_ ENTERO(2) y IDEN(a) REAL(,2)
-echo "int main() { suma(a, 2); return 0; }"
+echo "int main() { suma(a, 2); return 0; }" | ./bin/main /dev/stdin
 ```
