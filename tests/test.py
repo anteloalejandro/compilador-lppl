@@ -48,11 +48,14 @@ def test(dir: str, expect_failure: bool, show_error: bool) -> bool:
         # F                ; T                ; T
         # T                ; F                ; T
         # T                ; T                ; F
-        b = expect_failure ^ result.returncode == 0
+        b = expect_failure ^ (result.returncode == 0)
+
+        print(expect_failure, result.returncode == 0, b)
 
         print(success if b else failure, os.path.relpath(path, start=cwd))
 
         if show_error:
+            tab_print(result.stdout)
             tab_print(result.stderr)
             print()
 
