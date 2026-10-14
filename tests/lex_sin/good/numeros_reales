@@ -1,0 +1,4 @@
+int valor = 23;
+int valor = 3.;
+int valor = ,35;
+int valor = 234,0;

@@ -1,7 +1,8 @@
 // Ejemplo de uso de operadores aritmeticos
 //-----------------------------------------
 int main ()
-{ int a; int b=0;
+{
+  int a; int b=0;
 
   read(a);
   a = (((a + a) * 2) / 2 ) - a ;

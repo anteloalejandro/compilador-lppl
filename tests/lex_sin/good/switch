@@ -1,8 +1,8 @@
 int main() {
-  SWITCH x {
-    LESS print(4);
-    EQUAL print(5);
-    GREATER {
+  switch x {
+    less print(4);
+    equal print(5);
+    greater {
       x = x * 2;
       print(x);
     }
