@@ -75,3 +75,14 @@ Tenemos problemitas. Resulta que hay ambigüedades en el documento que nos resol
 - Tenemos que tener en cuenta que, como los identificadores pueden llevar `-`, es posible que no podamos diferenciar entre restas entre identificadores y un identificador separado por `-` (a-b puede ser la resta `a - b` o un identificador `a-b`).
 
 Muchos tests, aplicando preventivamente estos cambios... Petan.
+
+### Ejemplos
+
+```bash
+# NO FUNCIONA
+echo "int main() { suma(a,2); return 0; }"
+
+# FUNCIONA (espacio añadido)
+# Parece que el espacio elimina la ambigüedad entre IDEN(a) COMA_ ENTERO(2) y IDEN(a) REAL(,2)
+echo "int main() { suma(a, 2); return 0; }"
+```
