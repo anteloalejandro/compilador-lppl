@@ -6,6 +6,8 @@
 #include "rules.h"
 
 #define yield(x) { if (verbosidad) ECHO; return (x); }
+
+bool permite_decimal = true;
 %}
 
 %option noinput
@@ -16,8 +18,10 @@ comentario  "//".*\n
 delimitador [ \t\n]+
 digito      [0-9]
 entero      {digito}+
-/* 28 28. ,55 28,55 */
-real        ({entero}\.|{entero}?,{entero})
+/* 28 28. 28,55, el ',55' se gestiona aparte*/
+real        ({entero}\.|{entero},{entero})
+/* ,55 */
+decimal     ,{entero}
 /* "... el símbolo cte, que representa una constante numérica entera sin signo..." */
 constante   ({entero}|{real})
 letra       [a-zA-Z\-]
@@ -25,48 +29,63 @@ iden        [a-zA-Z]+({digito}|{letra})*
 
 /* NOTA: Las palabras clave DEBEN ir antes para hacer matching primero */
 %%
-"true"          { yield (TRUE_);     }
-"false"         { yield (FALSE_);    }
-"int"           { yield (INT_);      }
-"bool"          { yield (BOOL_);     }
-"return"        { yield (RETURN_);   }
-"for"           { yield (FOR_);      }
-"if"            { yield (IF_);       }
-"else"          { yield (ELSE_);     }
-"read"          { yield  (READ_);    }
-"print"         { yield  (PRINT_);   }
-"greater"       { yield  (GREATER_); } 
-"equal"         { yield  (EQUAL_);   }
-"less"          { yield  (LESS_);    }
-"switch"        { yield  (SWITCH_);  }
+"true"          { permite_decimal = true; yield (TRUE_);     }
+"false"         { permite_decimal = true; yield (FALSE_);    }
+"int"           { permite_decimal = true; yield (INT_);      }
+"bool"          { permite_decimal = true; yield (BOOL_);     }
+"return"        { permite_decimal = true; yield (RETURN_);   }
+"for"           { permite_decimal = true; yield (FOR_);      }
+"if"            { permite_decimal = true; yield (IF_);       }
+"else"          { permite_decimal = true; yield (ELSE_);     }
+"read"          { permite_decimal = true; yield  (READ_);    }
+"print"         { permite_decimal = true; yield  (PRINT_);   }
+"greater"       { permite_decimal = true; yield  (GREATER_); } 
+"equal"         { permite_decimal = true; yield  (EQUAL_);   }
+"less"          { permite_decimal = true; yield  (LESS_);    }
+"switch"        { permite_decimal = true; yield  (SWITCH_);  }
 
-"+"             { yield (MAS_);      }
-"-"             { yield (MENOS_);    }
-"*"             { yield (POR_);      }
-"/"             { yield (DIV_);      }
-"("             { yield (PARA_);     }
-")"             { yield (PARC_);     }
-"["             { yield (CORA_);     }
-"]"             { yield (CORC_);     }
-"{"             { yield (LLAVA_);    }
-"}"             { yield (LLAVC_);    }
-"="             { yield (ASIG_);     }
-"!"             { yield (NOT_);      }
-"&&"            { yield (AND_);      }
-"||"            { yield (OR_);       }
-">"             { yield (MAYOR_);    }
-"<"             { yield (MENOR_);    }
-"=="            { yield (IGUAL_);    }
-"!="            { yield (DESIGUAL_); }
-">="            { yield (MAYORIGUAL_);}
-"<="            { yield (MENORIGUAL_);}
-","             { yield (COMA_);   }
-";"             { yield (PUNTCOMA_); }
+"+"             { permite_decimal = true; yield (MAS_);      }
+"-"             { permite_decimal = true; yield (MENOS_);    }
+"*"             { permite_decimal = true; yield (POR_);      }
+"/"             { permite_decimal = true; yield (DIV_);      }
+"("             { permite_decimal = true; yield (PARA_);     }
+")"             { permite_decimal = false; yield (PARC_);     }
+"["             { permite_decimal = true; yield (CORA_);     }
+"]"             { permite_decimal = false; yield (CORC_);     }
+"{"             { permite_decimal = true; yield (LLAVA_);    }
+"}"             { permite_decimal = false; yield (LLAVC_);    }
+"="             { permite_decimal = true; yield (ASIG_);     }
+"!"             { permite_decimal = true; yield (NOT_);      }
+"&&"            { permite_decimal = true; yield (AND_);      }
+"||"            { permite_decimal = true; yield (OR_);       }
+">"             { permite_decimal = true; yield (MAYOR_);    }
+"<"             { permite_decimal = true; yield (MENOR_);    }
+"=="            { permite_decimal = true; yield (IGUAL_);    }
+"!="            { permite_decimal = true; yield (DESIGUAL_); }
+">="            { permite_decimal = true; yield (MAYORIGUAL_);}
+"<="            { permite_decimal = true; yield (MENORIGUAL_);}
+";"             { permite_decimal = true; yield (PUNTCOMA_); }
+","             {
+                  permite_decimal = true;
+                  yield (COMA_);
+                }
 
 {delimitador}   { if (verbosidad) ECHO; }
 {comentario}    { if (verbosidad) ECHO; }
-{iden}          { yield (IDEN_);     }
-{constante}     { yield (CTE_);      }
+{iden}          { permite_decimal = false; yield (IDEN_);     }
+{constante}     { permite_decimal = false; yield (CTE_);      }
+{decimal}       {
+                  if (permite_decimal) {
+                    permite_decimal = false;
+                    yield (CTE_);
+                  } else {
+                    // no se ha podido usar como decimal, así que recicla la
+                    // cadena para que la use yylex en la siguiente iteración.
+                    yyless(1);
+                    permite_decimal = true;
+                    yield (COMA_);
+                  }
+                }
 
 .               { yyerror("Caracter desconocido"); }
 %%
