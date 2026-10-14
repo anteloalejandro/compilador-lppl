@@ -1,0 +1,10 @@
+int main() {
+  // x no existe, pero a los analizadores léxico y semántico les da igual
+  if (x == 2) {
+
+  } else if (x == 3) {
+
+  }
+
+  return 0;
+}

@@ -1,0 +1,13 @@
+int main() {
+  // x no existe, pero a los analizadores léxico y semántico les da igual
+  if (x == 2) {
+
+  // el else puede tener un if como inst
+  } else if (x == 3) {
+
+  } else {
+
+  }
+
+  return 0;
+}

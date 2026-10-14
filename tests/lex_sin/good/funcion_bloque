@@ -1,5 +1,5 @@
 int main() {
-  int x = 0;
+  int x;
   bool y = 1; // el analizador sintáctico y léxico lo deben dar por bueno
 
   read(x);
