@@ -14,11 +14,12 @@ help:
 	@echo "Uso: make [target]"
 	@echo ""
 	@echo "Targets:"
-	@echo "  help	  	 Muestra este mensaje"
-	@echo "  compile	 Compila el proyecto y genera el binario bin/main"
-	@echo "  rules		 Compila el archivo de reglas, mostrando errores y avisos"
-	@echo "  lexer		 Compila el lexer, mostrando errores y avisos (si los hay). También compila las reglas."
-	@echo "  clean		 Elimina los archivos generados por make build"
+	@echo "  help	  	Muestra este mensaje"
+	@echo "  compile	Compila el proyecto y genera el binario bin/main"
+	@echo "  rules		Compila el archivo de reglas, mostrando errores y avisos"
+	@echo "  lexer		Compila el lexer, mostrando errores y avisos (si los hay). También compila las reglas."
+	@echo "  test		Ejecuta la batería de tests del directorio 'tests', compilando el proyecto primero si es necesario"
+	@echo "  clean		Elimina los archivos generados por make build"
 
 compile: $(BINDIR)/main
 
@@ -30,8 +31,13 @@ rules:
 lexer:
 	$(MAKE) --always-make $(OBJDIR)/lexer.c
 
+test: .test.log
+
 clean:
 	rm -r $(BINDIR) $(OBJDIR) 2>/dev/null
+
+.test.log: $(BINDIR)/main
+	python tests/test.py | tee .test.log
 
 # $@ es el nombre del target, en este caso $(BINDIR)/main
 $(BINDIR)/main: $(OBJS) | $(BINDIR) # asegura que OBJS y BINDIR existen
