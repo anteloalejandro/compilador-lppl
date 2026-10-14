@@ -28,7 +28,7 @@ failure = "🟥"
 # HELPERS
 
 def tab_print(s: str, level = 1, tab = " " * 4):
-    for line in s.splitlines():
+    for line in s.strip().splitlines():
         print(tab + line)
 
 def test(dir: str, expect_failure: bool, show_error: bool) -> bool:
@@ -50,14 +50,11 @@ def test(dir: str, expect_failure: bool, show_error: bool) -> bool:
         # T                ; T                ; F
         b = expect_failure ^ (result.returncode == 0)
 
-        print(expect_failure, result.returncode == 0, b)
-
         print(success if b else failure, os.path.relpath(path, start=cwd))
 
         if show_error:
             tab_print(result.stdout)
             tab_print(result.stderr)
-            print()
 
         test_success = test_success and b
 

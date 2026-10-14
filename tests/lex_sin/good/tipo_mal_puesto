@@ -1,0 +1,3 @@
+// el analizador sintáctico y léxico lo deben dar por bueno.
+// es el semántico el que debe dar error.
+bool y = 1;

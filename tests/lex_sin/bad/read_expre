@@ -1,0 +1,4 @@
+int main() {
+  // read recibe un identificador, no una expresión
+  read(x + 2);
+}

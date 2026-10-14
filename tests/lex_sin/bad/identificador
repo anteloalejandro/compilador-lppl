@@ -1,0 +1,2 @@
+int esto-sirve = 0;
+int esto_no_sirve = 0; // no podemos usar "_", pero sí "-"

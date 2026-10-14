@@ -1,0 +1,11 @@
+int main() {
+  int x = 0;
+  bool y = 1; // el analizador sintáctico y léxico lo deben dar por bueno
+
+  read(x);
+  y = x * 2;
+
+  print(y + 1);
+
+  return y;
+}

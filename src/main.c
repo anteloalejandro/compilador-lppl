@@ -9,7 +9,7 @@ int numErrores = 0;
 
 void yyerror(const char * msg) {
   numErrores++;  fflush(stdout);
-  fprintf(stdout, "\nError en %d: %s\n", yylineno, msg);
+  fprintf(stdout, "\nError en línea %d: %s\n", yylineno, msg);
 }
 
 int main(int argc, char **argv) {

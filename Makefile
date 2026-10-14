@@ -9,6 +9,8 @@ LIBS = -lfl
 SRCS = $(wildcard $(SRCDIR)/*.c)
 # "path substitute" reemplaza los src/*.c por build/*.o
 OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS)) $(OBJDIR)/lexer.o $(OBJDIR)/rules.o
+# archivos de test (hasta 3 niveles de anidación)
+TESTS = $(wildcard tests/* tests/*/* tests/*/*/*)
 
 help:
 	@echo "Uso: make [target]"
@@ -19,6 +21,7 @@ help:
 	@echo "  rules		Compila el archivo de reglas, mostrando errores y avisos"
 	@echo "  lexer		Compila el lexer, mostrando errores y avisos (si los hay). También compila las reglas."
 	@echo "  test		Ejecuta la batería de tests del directorio 'tests', compilando el proyecto primero si es necesario"
+	@echo "  test_force	Ejecuta forzosamente la batería de tests del directorio 'tests', compilando el proyecto"
 	@echo "  clean		Elimina los archivos generados por make build"
 
 compile: $(BINDIR)/main
@@ -36,7 +39,7 @@ test: .test.log
 clean:
 	rm -r $(BINDIR) $(OBJDIR) 2>/dev/null
 
-.test.log: $(BINDIR)/main
+.test.log: $(BINDIR)/main $(TESTS)
 	python tests/test.py | tee .test.log
 
 # $@ es el nombre del target, en este caso $(BINDIR)/main

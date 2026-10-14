@@ -1,0 +1,3 @@
+// hola, mundo!
+int valor = 0; // según la especificación, debe fallar si no ponemos nada aparte del comentario...
+// así que ponemos cosas! (declaVar)

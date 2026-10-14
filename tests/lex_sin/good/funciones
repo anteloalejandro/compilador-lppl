@@ -1,0 +1,11 @@
+bool sin-params() {
+  return true;
+}
+
+bool con-param(int x) {
+  return false;
+}
+
+int con-varios-params(int x, bool y) {
+  return 10;
+}
