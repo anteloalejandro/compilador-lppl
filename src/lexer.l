@@ -20,7 +20,7 @@ digito      [0-9]
 entero      {digito}+
 /* 28 28. 28,55, el ',55' se gestiona aparte*/
 real        ({entero}\.|{entero},{entero})
-/* ,55 */
+/* real sin parte entera, como ',55' */
 decimal     ,{entero}
 /* "... el símbolo cte, que representa una constante numérica entera sin signo..." */
 constante   ({entero}|{real})
@@ -28,6 +28,7 @@ letra       [a-zA-Z\-]
 iden        [a-zA-Z]+({digito}|{letra})*
 
 /* NOTA: Las palabras clave DEBEN ir antes para hacer matching primero */
+/* NOTA: Todo lo que pueda ir sucedido de un decimal de la forma ',123' debe establecer permite_decimal = true. */
 %%
 "true"          { yield (TRUE_);     }
 "false"         { yield (FALSE_);    }
@@ -64,7 +65,7 @@ iden        [a-zA-Z]+({digito}|{letra})*
 "!="            { permite_decimal = true; yield (DESIGUAL_); }
 ">="            { permite_decimal = true; yield (MAYORIGUAL_);}
 "<="            { permite_decimal = true; yield (MENORIGUAL_);}
-";"             { permite_decimal = true; yield (PUNTCOMA_); }
+";"             { yield (PUNTCOMA_); }
 ","             {
                   permite_decimal = true;
                   yield (COMA_);
