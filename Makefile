@@ -21,7 +21,6 @@ help:
 	@echo "  rules		Compila el archivo de reglas, mostrando errores y avisos"
 	@echo "  lexer		Compila el lexer, mostrando errores y avisos (si los hay). También compila las reglas."
 	@echo "  test		Ejecuta la batería de tests del directorio 'tests', compilando el proyecto primero si es necesario"
-	@echo "  test_force	Ejecuta forzosamente la batería de tests del directorio 'tests', compilando el proyecto"
 	@echo "  clean		Elimina los archivos generados por make build"
 
 compile: $(BINDIR)/main
