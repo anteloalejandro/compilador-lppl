@@ -29,20 +29,20 @@ iden        [a-zA-Z]+({digito}|{letra})*
 
 /* NOTA: Las palabras clave DEBEN ir antes para hacer matching primero */
 %%
-"true"          { permite_decimal = true; yield (TRUE_);     }
-"false"         { permite_decimal = true; yield (FALSE_);    }
-"int"           { permite_decimal = true; yield (INT_);      }
-"bool"          { permite_decimal = true; yield (BOOL_);     }
-"return"        { permite_decimal = true; yield (RETURN_);   }
-"for"           { permite_decimal = true; yield (FOR_);      }
-"if"            { permite_decimal = true; yield (IF_);       }
-"else"          { permite_decimal = true; yield (ELSE_);     }
-"read"          { permite_decimal = true; yield  (READ_);    }
-"print"         { permite_decimal = true; yield  (PRINT_);   }
-"greater"       { permite_decimal = true; yield  (GREATER_); } 
-"equal"         { permite_decimal = true; yield  (EQUAL_);   }
-"less"          { permite_decimal = true; yield  (LESS_);    }
-"switch"        { permite_decimal = true; yield  (SWITCH_);  }
+"true"          { yield (TRUE_);     }
+"false"         { yield (FALSE_);    }
+"int"           { yield (INT_);      }
+"bool"          { yield (BOOL_);     }
+"return"        { yield (RETURN_);   }
+"for"           { yield (FOR_);      }
+"if"            { yield (IF_);       }
+"else"          { yield (ELSE_);     }
+"read"          { yield  (READ_);    }
+"print"         { yield  (PRINT_);   }
+"greater"       { yield  (GREATER_); } 
+"equal"         { yield  (EQUAL_);   }
+"less"          { yield  (LESS_);    }
+"switch"        { yield  (SWITCH_);  }
 
 "+"             { permite_decimal = true; yield (MAS_);      }
 "-"             { permite_decimal = true; yield (MENOS_);    }
