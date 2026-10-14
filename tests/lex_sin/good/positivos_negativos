@@ -1,5 +1,8 @@
-int valor =
-+
-1;
+int main() {
+  // int x = -1; // esto no sería válido
+  int x;
+  x = -1;
+  x = +x;
 
-int valor = -1;
+  return 0;
+}
