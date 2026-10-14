@@ -13,6 +13,7 @@ OBJS = $(patsubst $(SRCDIR)/%.c, $(OBJDIR)/%.o, $(SRCS)) $(OBJDIR)/lexer.o $(OBJ
 TESTS = $(wildcard tests/* tests/*/* tests/*/*/*)
 
 # haz que si un comando falle, el error se propague por las tuberías
+SHELL = /bin/bash
 .SHELLFLAGS = -o pipefail -c
 
 help:
