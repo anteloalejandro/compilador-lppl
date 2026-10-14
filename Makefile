@@ -4,7 +4,7 @@ OBJDIR = build
 BINDIR = bin
 
 OPTS = -Wall
-LIBS = -lfl
+LIBS = -lfl # -l:libtds.a # para la parte 2
 # busca todos los archivos .c de src/
 SRCS = $(wildcard $(SRCDIR)/*.c)
 # "path substitute" reemplaza los src/*.c por build/*.o
@@ -16,6 +16,9 @@ TESTS = $(wildcard tests/* tests/*/* tests/*/*/*)
 SHELL = /bin/bash
 .SHELLFLAGS = -o pipefail -c
 
+# esta debe ser la opción por defecto, de acuerdo a la entrega
+compile: $(BINDIR)/main
+
 help:
 	@echo "Uso: make [target]"
 	@echo ""
@@ -26,8 +29,6 @@ help:
 	@echo "  lexer		Compila el lexer, mostrando errores y avisos (si los hay). También compila las reglas."
 	@echo "  test		Ejecuta la batería de tests del directorio 'tests', compilando el proyecto primero si es necesario"
 	@echo "  clean		Elimina los archivos generados por make build"
-
-compile: $(BINDIR)/main
 
 .PHONY: rules
 rules:

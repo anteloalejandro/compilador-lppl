@@ -21,7 +21,7 @@ Compilación con `make`.
 
 ```bash
 # mostrar ayuda
-make
+make help
 
 # compilar
 make compile
