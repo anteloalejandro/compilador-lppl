@@ -59,7 +59,7 @@ tipoSimp: BOOL_
 
 declaVar: tipoSimp IDEN_ PUNTCOMA_
         | tipoSimp IDEN_ ASIG_ CTE_ PUNTCOMA_
-        | tipoSimp IDEN_ CORA_ CTE_ CORC_
+        | tipoSimp IDEN_ CORA_ CTE_ CORC_ PUNTCOMA_
         ;
 
 declaVarLocal: 

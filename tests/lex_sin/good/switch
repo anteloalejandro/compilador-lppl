@@ -1,0 +1,12 @@
+int main() {
+  SWITCH x {
+    LESS print(4);
+    EQUAL print(5);
+    GREATER {
+      x = x * 2;
+      print(x);
+    }
+  }
+
+  return 0;
+}
