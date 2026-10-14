@@ -41,7 +41,7 @@ lexer:
 test: .test.log
 
 clean:
-	rm -r $(BINDIR) $(OBJDIR) 2>/dev/null
+	rm -r $(BINDIR) $(OBJDIR) .test.log 2>/dev/null
 
 .test.log: $(BINDIR)/main $(TESTS)
 	python3 tests/test.py | tee .test.log
