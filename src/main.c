@@ -1,6 +1,9 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "header.h"
+
+#define MAL_USO -1
 
 bool verbosidad = FALSE;
 int numErrores = 0;
@@ -19,20 +22,23 @@ int main(int argc, char **argv) {
       n++;
     }
   }
-  if (argc == n+1) {
-    if ((yyin = fopen (argv[n], "r")) == NULL) {
-      fprintf(stderr, "El fichero '%s' no es valido\n", argv[n]) ;     
-      fprintf(stderr, "Uso: %s [-v] fichero\n", argv[0]);
-    } else {
-      if (verbosidad) fprintf(stdout, "%3d.- ", yylineno);
-      yyparse();
-      if (numErrores > 0) {
-        fprintf(stderr, "\nNumero de errores:      %d\n", numErrores);
-      }
-    }
-  } else {
+
+  if (argc != n+1) {
     fprintf(stderr, "Uso: %s [-v] fichero\n", argv[0]);
+    return MAL_USO;
   }
 
-  return 0;
-} 
+  if ((yyin = fopen (argv[n], "r")) == NULL) {
+    fprintf(stderr, "El fichero '%s' no es valido\n", argv[n]);
+    fprintf(stderr, "Uso: %s [-v] fichero\n", argv[0]);
+    return MAL_USO;
+  }
+
+  if (verbosidad) fprintf(stdout, "%3d.- ", yylineno);
+  yyparse();
+  if (numErrores > 0) {
+    fprintf(stderr, "\nNumero de errores:      %d\n", numErrores);
+  }
+
+  return numErrores;
+}
