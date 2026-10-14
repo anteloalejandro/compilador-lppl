@@ -39,7 +39,7 @@ clean:
 	rm -r $(BINDIR) $(OBJDIR) 2>/dev/null
 
 .test.log: $(BINDIR)/main $(TESTS)
-	python tests/test.py | tee .test.log
+	python3 tests/test.py | tee .test.log
 
 # $@ es el nombre del target, en este caso $(BINDIR)/main
 $(BINDIR)/main: $(OBJS) | $(BINDIR) # asegura que OBJS y BINDIR existen
