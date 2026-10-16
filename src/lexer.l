@@ -17,7 +17,7 @@ delimitador [ \t\n]+
 digito      [0-9]
 entero      {digito}+
 /* 28 28. ,55 28,55 */
-real        ({entero}\.|{entero}?,{entero})
+real        ({entero}(,|\.)|{entero}?(,|\.){entero})
 /* "... el símbolo cte, que representa una constante numérica entera sin signo..." */
 constante   ({entero}|{real})
 letra       [a-zA-Z\-]
