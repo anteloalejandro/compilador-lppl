@@ -31,8 +31,8 @@ def tab_print(s: str, level = 1, tab = " " * 4):
     for line in s.strip().splitlines():
         print(tab + line)
 
-def test(dir: str, expect_failure: bool, show_error: bool) -> bool:
-    test_success = True
+def test(dir: str, expect_failure: bool, show_error: bool) -> int:
+    error_count = 0;
 
     for test in os.listdir(dir):
         path = os.path.join(dir, test)
@@ -56,18 +56,20 @@ def test(dir: str, expect_failure: bool, show_error: bool) -> bool:
             tab_print(result.stdout)
             tab_print(result.stderr)
 
-        test_success = test_success and b
+        if not b: error_count = error_count + 1;
 
-    return test_success
+    return error_count
 
 # TESTEO
 
 good_dir = os.path.join(cwd, "lex_sin", "good")
 bad_dir = os.path.join(cwd, "lex_sin", "bad")
 
-result = True
+errors = 0
 
-result = result and test(good_dir, False, True)
-result = result and test(bad_dir, True, VERBOSE)
+errors = errors + test(good_dir, False, True)
+errors = errors + test(bad_dir, True, VERBOSE)
 
-exit(0 if result else 1)
+if errors > 0: print(f"\n{errors} tests fallidos")
+
+exit(errors)
