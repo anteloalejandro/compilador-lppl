@@ -67,18 +67,6 @@ Además, si se espera que el test no falle y sí falla, se mostrará el mensaje 
 
 ## Notas
 
-Tenemos problemitas. Resulta que hay ambigüedades en el documento que nos resolverán en algún momento. Notablemente:
-
-- Las palabras clave, a priori, son en minúscula. Esto incluye las que están explícitamente definidas en mayúscula como `SWITCH`.
-
-- Las constantes dice en un sitio que son enteras, y en otro que son reales. Aparentemente son reales. Ponerlas como reales tal y como indica en el PDF rompe algunos tests por la gracieta de que usa comas en lugar de puntos (por ejemplo, se confunde en las listas de parámetros de las funciones).
-
-- El PDF indica que los símbolos de las constantes (+1, -1) no forman parte de la constante. Pero parece ser que tienen que poder ponerse, aunque no está definido en ningún lugar cómo.
-
-- Tenemos que tener en cuenta que, como los identificadores pueden llevar `-`, es posible que no podamos diferenciar entre restas entre identificadores y un identificador separado por `-` (a-b puede ser la resta `a - b` o un identificador `a-b`). **Esto no debería dar (demasiados) problemas ahora, pero dará problemas en el analizador semántico.**
-
-### Ejemplos
-
 **Reales vs parámetros**
 
 Por culpa de ambigüedad entre `listParamAct` (que usa comas para separar parámetros) y la definición de las constantes reales (que usa comas para los decimales).

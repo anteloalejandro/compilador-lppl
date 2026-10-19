@@ -17,6 +17,7 @@ VERBOSE = args.verbose
 
 cwd = __file__[:__file__.rfind(os.sep)]
 
+
 main = os.path.join(".", cwd, "..", "bin", "main")
 if not os.path.exists(main):
     print("DEBES COMPILAR EL PROYECTO PRIMERO")
@@ -62,13 +63,24 @@ def test(dir: str, expect_failure: bool, show_error: bool) -> int:
 
 # TESTEO
 
+errors = 0
+
+def test_good(dir: str):
+    global errors
+    errors = errors + test(dir, False, True)
+
+def test_bad(dir: str):
+    global errors
+    errors = errors + test(dir, True, VERBOSE)
+
 good_dir = os.path.join(cwd, "lex_sin", "good")
 bad_dir = os.path.join(cwd, "lex_sin", "bad")
 
-errors = 0
-
-errors = errors + test(good_dir, False, True)
-errors = errors + test(bad_dir, True, VERBOSE)
+print("\nANALIZADOR LÉXICO / SINTÁCTICO")
+test_good(f"{cwd}/lex_sin/good")
+test_bad(f"{cwd}/lex_sin/bad")
+print("\nANALIZADOR SEMÁNTICO")
+test_good(f"{cwd}/sem/good")
 
 if errors > 0: print(f"\n{errors} tests fallidos")
 

@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <string.h>
 #include "header.h"
+#include "libtds.h"
 
 #define MAL_USO -1
 
-bool verbosidad = FALSE;
+bool verTds = false;
+bool verbosidad = false;
 int numErrores = 0;
 
 void yyerror(const char * msg) {
@@ -17,7 +19,11 @@ int main(int argc, char **argv) {
 
   for (i=1; i<argc; ++i) {
     if (strcmp(argv[i], "-v")==0) {
-      verbosidad = TRUE;
+      verbosidad = true;
+      n++;
+    }
+    if (strcmp(argv[i], "-t")==0) {
+      verTds = true;
       n++;
     }
   }
@@ -34,6 +40,7 @@ int main(int argc, char **argv) {
   }
 
   if (verbosidad) fprintf(stdout, "%3d.- ", yylineno);
+  if (verTds) mostrarTdS();
   yyparse();
   if (numErrores > 0) {
     fprintf(stderr, "\nNumero de errores:      %d\n", numErrores);
