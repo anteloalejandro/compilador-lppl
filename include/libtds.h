@@ -44,34 +44,38 @@ int dvar;                     /* Desplazamiento en el Segmento de Variables  */
 int niv;                      /* Nivel de anidamiento "global" o "local"     */
 
 /************************************* Operaciones para la gestion de la TDS */
-void cargaContexto (int n) ;
+
 /* Crea el contexto necesario para los objetos globales y para los objetos 
    locales a las funciones.                                                  */
-void descargaContexto (int n) ;
-/* Libera en la TdB y la TdS el contexto asociado con la funcion.            */
+void cargaContexto (int n) ;
 
-int insTdS(char *nom, int cat, int tipo, int n, int desp, int ref) ;
+/* Libera en la TdB y la TdS el contexto asociado con la funcion.            */
+void descargaContexto (int n) ;
+
 /* Inserta en la TDS toda la informacion asociada con una variable de nombre,
    "nom"; categoria, "cat"; tipo, "tipo"; nivel del bloque, "n"; desplaza-
    miento relativo en el segmento de variables, "des" y referencia, "ref", 
    a posibles subtablas de vectores, registros o dominios (siendo (-1) si es 
    de tipo simple). Si la variable ya existe devuelve el valor "FALSE=0" 
    ("TRUE=1" en caso contrario).                                             */
-SIMB obtTdS(char *nom) ;
+int insTdS(char *nom, int cat, int tipo, int n, int desp, int ref) ;
+
 /* Obtiene toda la informacion asociada con un objeto de nombre, "nom", y la
    devuelve en una estructura de tipo "SIMB" (ver "libtds.h"). Si el objeto 
    no esta declarado, devuelve "T_ERROR" en el campo "tipo".                 */
+SIMB obtTdS(char *nom) ;
 
-int insTdA(int telem, int nelem) ;
 /* Inserta en la Tabla de Arrays la informacion de un array con elementos de 
    tipo, "telem"; y numero de elementos, "nelem". Devuelve su referencia en 
    la Tabla de Arrays.                                                       */
-DIM obtTdA(int ref) ;
+int insTdA(int telem, int nelem) ;
+
 /* Obtiene toda la informacion asociada con un array referenciado por "ref" 
    de la Tabla de Arrays y la devuelve en una estructura de tipo "DIM" 
    (ver "libtds.h"). En caso de error devuelve "T_ERROR" en el campo 
    "telem".                                                                  */
-int insTdD (int refe, int tipo) ;
+DIM obtTdA(int ref) ;
+
 /* Para un dominio existente referenciado por "refe", inserta en la Tabla 
    de Dominios la informacion del "tipo" del parametro. Si "ref = -1" entonces
    crea una nueva entrada en la Tabla de Dominios para el tipo de este 
@@ -79,7 +83,8 @@ int insTdD (int refe, int tipo) ;
    el numero de parametros y la talla del segmento de parametros. Si la 
    funcion no tiene parametros, debe crearse un dominio vacio con: 
    "refe = -1" y "tipo = T_VACIO".                                           */
-INF obtTdD (int refe) ;
+int insTdD (int refe, int tipo) ;
+
 /* Obtiene toda la informacion asociada con el dominio referenciado por "refe"
    de la Tabla de Dominios y la devuelve en una estructura de tipo "INF" 
    (ver "libtds.h"). Si "refe<0" devuelve la informacion de la funcion actual,
@@ -88,13 +93,16 @@ INF obtTdD (int refe) ;
    tipo del rango de la funcion y la talla del segmento de parametros. Si 
    "refe" no se corresponde con una funcion ya compilada, devuelve "T_ERROR"
    en el campo "tipo".                                                      */
-int cmpDom (int refx, int refy) ;
+INF obtTdD (int refe) ;
+
 /* Si los dominios referenciados por "refx" y "refy" no coinciden devuelve 
    "FALSE=0" ("TRUE=1" si son iguales).                                      */
-void mostrarTdS () ;
+int cmpDom (int refx, int refy) ;
+
 /* Muestra toda la informacion de la TDS para objetos globales y locales.
    Se recomienda hacerlo (si "verTdS = true") al finalizar la compilacion
    de la funcion, justo antes de ("descargarContexto").                      */
+void mostrarTdS () ;
 
 #endif  /* _LIBTDS_H */
 /*****************************************************************************/
