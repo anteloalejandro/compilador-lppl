@@ -50,7 +50,7 @@ def get_expected_errors(path: str) -> int:
 def test(dir: str, show_error: bool) -> int:
     failed_test_count = 0;
 
-    for test in os.listdir(dir):
+    for test in sorted(os.listdir(dir)):
         path = os.path.join(dir, test)
         expected_errors = get_expected_errors(path)
         result = subprocess.run(
