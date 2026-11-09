@@ -58,6 +58,17 @@ Los tests de los que se obtenga el resultado esperado, estarán marcados con un 
 
 Además, si se espera que el test no falle y sí falla, se mostrará el mensaje de error con el que ha fallado.
 
+## POR HACER
+
+**Ignoramos todo lo relacionado con la Tabla de Dominion (`TdD`) porque falta verlo en teoría.**
+
+- [x] Comprobar que el código contiene una función `main`.
+- [ ] Al declarar funciones, hay que insertarlas en la tabla de símbolos y tabla de dominio.
+- [ ] Al declarar variables simples, hay que insertarlas en la tabla de símbolos con referencia REF_SIMPLE.
+- [ ] Al declarar arrays, hay que insertarlas primero en la tabla de arrays (`TdA`), que devolverá una referencia. Al insertar en la tabla de símbolos, se usa esa referencia.
+- [ ] Las funciones tienen que insertarse en la TdS antes de analizar el cuerpo para poder hacer recursión. **(Quizás)**.
+- [ ] Hay que tener en las variables locales `niv` (para el nivel de anidamiento) y `dvar` (desplazamiento de variables) **no se actualizan solas**. Hay que actualizarlas cada vez que añadamos un ámbito / variable.
+
 ## Autores
 
 - Alejandro Amor Torres

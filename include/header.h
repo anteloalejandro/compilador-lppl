@@ -7,6 +7,9 @@
 #define TALLA_TIPO_SIMPLE 1
 #define TALLA_SEGENLANCES 2
 
+// Referencia para tipos de datos simples
+#define REF_SIMPLE    -1
+
 enum { FALSE = 0, TRUE }; // bool backup
 
 extern int yylex();

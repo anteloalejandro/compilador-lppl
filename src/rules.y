@@ -1,7 +1,13 @@
 %{
   #include "header.h"
+  #include "libtds.h"
   extern int yylineno;
 %}
+
+%union {
+  int cte;
+  char *iden;
+}
 
 // CONSTANTES
 %token FALSE_ TRUE_ INT_ BOOL_
@@ -33,11 +39,17 @@
 %token READ_ PRINT_ 
 
 // TOKENS MISCELÁNEOS
-%token CTE_ IDEN_
+%token <iden> IDEN_
+%token <cte> CTE_
 %token PUNTCOMA_ COMA_ 
 
 %%
-programa: listDecla
+programa: listDecla {
+          SIMB s = obtTdS("main");
+          if (s.t == T_ERROR) {
+            yyerror("NO HAY UNA FUNCIÓN `main`")
+          }
+        }
         ;
 
 listDecla: decla
@@ -66,18 +78,18 @@ declaVarLocal:
              | declaVarLocal declaVar
              ;
 
-listParamForm: tipoSimp IDEN_
+listParamForm: tipoSimp IDEN_ { $$ = $2; }
              | tipoSimp IDEN_ COMA_ listParamForm
              ;
 
 paramForm:
-         | listParamForm
+         | listParamForm { $$ = $1 }
          ;
 
 bloque: LLAVA_ declaVarLocal listInst RETURN_ expre PUNTCOMA_ LLAVC_
       ;
 
-declaFunc: tipoSimp IDEN_ PARA_ paramForm PARC_ bloque
+declaFunc: tipoSimp IDEN_ PARA_ paramForm PARC_ bloque 
          ;
 
 listInst:
