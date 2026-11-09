@@ -5,7 +5,7 @@
 /* Archivo generado a partir de rules.y, contiene los tokens que vamos a usar */
 #include "rules.h"
 
-#define yield(x) { if (verbosidad) ECHO; return (x); }
+#define yield(x, ...) { if (verbosidad) ECHO; __VA_ARGS__; return (x); }
 %}
 
 %option noinput
@@ -25,8 +25,8 @@ iden        [a-zA-Z]+({digito}|{letra})*
 
 /* NOTA: Las palabras clave DEBEN ir antes para hacer matching primero */
 %%
-"true"          { yield (TRUE_);     }
-"false"         { yield (FALSE_);    }
+"true"          { yield (TRUE_, yylval.cte = 1); }
+"false"         { yield (FALSE_, yylval.cte = 0); }
 "int"           { yield (INT_);      }
 "bool"          { yield (BOOL_);     }
 "return"        { yield (RETURN_);   }
@@ -65,8 +65,8 @@ iden        [a-zA-Z]+({digito}|{letra})*
 
 {delimitador}   { if (verbosidad) ECHO; }
 {comentario}    { if (verbosidad) ECHO; }
-{iden}          { yield (IDEN_);     }
-{constante}     { yield (CTE_);      }
+{iden}          { yield (IDEN_, yylval.iden = yytext);     }
+{constante}     { yield (CTE_, yylval.cte = atoi(yytext)); }
 
 .               { yyerror("Caracter desconocido"); }
 %%

@@ -10,7 +10,7 @@
 }
 
 // CONSTANTES
-%token FALSE_ TRUE_ INT_ BOOL_
+%token <cte> FALSE_ TRUE_ INT_ BOOL_
 
 // OPERADORES ARITMÉTICOS
 %token MAS_ MENOS_ POR_ DIV_
@@ -43,13 +43,17 @@
 %token <cte> CTE_
 %token PUNTCOMA_ COMA_ 
 
+%type <cte> const
+
 %%
 programa: listDecla {
-          SIMB s = obtTdS("main");
-          if (s.t == T_ERROR) {
-            yyerror("NO HAY UNA FUNCIÓN `main`")
+            if (verTdS) mostrarTdS();
+
+            SIMB s = obtTdS("main");
+            if (s.t == T_ERROR) {
+              yyerror("NO HAY UNA FUNCIÓN `main`");
+            }
           }
-        }
         ;
 
 listDecla: decla
@@ -60,9 +64,9 @@ decla: declaVar
      | declaFunc
      ;
 
-const: CTE_
-     | TRUE_
-     | FALSE_
+const: CTE_ { $$ = (int)$1; }
+     | TRUE_ { $$ = $1; }
+     | FALSE_ { $$ = $1; }
      ;
 
 tipoSimp: BOOL_
@@ -78,12 +82,12 @@ declaVarLocal:
              | declaVarLocal declaVar
              ;
 
-listParamForm: tipoSimp IDEN_ { $$ = $2; }
+listParamForm: tipoSimp IDEN_
              | tipoSimp IDEN_ COMA_ listParamForm
              ;
 
 paramForm:
-         | listParamForm { $$ = $1 }
+         | listParamForm
          ;
 
 bloque: LLAVA_ declaVarLocal listInst RETURN_ expre PUNTCOMA_ LLAVC_

@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "header.h"
-#include "libtds.h"
 
 #define MAL_USO -1
 
-bool verTds = false;
+bool verTdS = false;
 bool verbosidad = false;
 int numErrores = 0;
 
@@ -23,7 +22,7 @@ int main(int argc, char **argv) {
       n++;
     }
     if (strcmp(argv[i], "-t")==0) {
-      verTds = true;
+      verTdS = true;
       n++;
     }
   }
@@ -40,7 +39,6 @@ int main(int argc, char **argv) {
   }
 
   if (verbosidad) fprintf(stdout, "%3d.- ", yylineno);
-  if (verTds) mostrarTdS();
   yyparse();
   if (numErrores > 0) {
     fprintf(stderr, "\nNumero de errores:      %d\n", numErrores);
