@@ -6,6 +6,7 @@
 
 %union {
   int cte;
+  unsigned int tipo;
   char *iden;
 }
 
@@ -45,6 +46,8 @@
 
 %type <cte> const
 
+%type <tipo> tipoSimp
+
 %%
 programa: listDecla {
             if (verTdS) mostrarTdS();
@@ -69,13 +72,40 @@ const: CTE_ { $$ = (int)$1; }
      | FALSE_ { $$ = $1; }
      ;
 
-tipoSimp: BOOL_
-        | INT_
+tipoSimp: BOOL_ { $$ = T_LOGICO; }
+        | INT_ { $$ = T_ENTERO; }
         ;
 
 declaVar: tipoSimp IDEN_ PUNTCOMA_
+        {
+          if (insTdS($2, VARIABLE, $1, niv, dvar, REF_SIMPLE)) {
+            dvar += TALLA_TIPO_SIMPLE;
+          } else {
+            yyerror("Identificador repetido");
+          }
+        }
         | tipoSimp IDEN_ ASIG_ const PUNTCOMA_
+        {
+          if (insTdS($2, VARIABLE, $1, niv, dvar, REF_SIMPLE)) {
+            dvar += TALLA_TIPO_SIMPLE;
+          } else {
+            yyerror("Identificador repetido");
+          }
+        }
         | tipoSimp IDEN_ CORA_ CTE_ CORC_ PUNTCOMA_
+        {
+          int elems = $4;
+          if (elems == 0) {
+            yyerror("La talla del array debe ser superior a 0");
+            elems = 0;
+          }
+
+          if (insTdS($2, VARIABLE, $1, niv, dvar, REF_SIMPLE)) {
+            dvar += TALLA_TIPO_SIMPLE * elems;
+          } else {
+            yyerror("Identificador repetido");
+          }
+        }
         ;
 
 declaVarLocal: 
