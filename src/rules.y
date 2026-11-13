@@ -1,6 +1,7 @@
 %{
   #include "header.h"
   #include "libtds.h"
+  #include "helpers.h"
   extern int yylineno;
 %}
 
@@ -11,7 +12,8 @@
 }
 
 // CONSTANTES
-%token <cte> FALSE_ TRUE_ INT_ BOOL_
+%token <cte> FALSE_ TRUE_
+%token INT_ BOOL_
 
 // OPERADORES ARITMÉTICOS
 %token MAS_ MENOS_ POR_ DIV_
@@ -81,7 +83,7 @@ declaVar: tipoSimp IDEN_ PUNTCOMA_
           if (insTdS($2, VARIABLE, $1, niv, dvar, REF_SIMPLE)) {
             dvar += TALLA_TIPO_SIMPLE;
           } else {
-            yyerror("Identificador repetido");
+            yyerrorf("Identificador <%s> repetido", $2);
           }
         }
         | tipoSimp IDEN_ ASIG_ const PUNTCOMA_
@@ -89,7 +91,7 @@ declaVar: tipoSimp IDEN_ PUNTCOMA_
           if (insTdS($2, VARIABLE, $1, niv, dvar, REF_SIMPLE)) {
             dvar += TALLA_TIPO_SIMPLE;
           } else {
-            yyerror("Identificador repetido");
+            yyerrorf("Identificador <%s> repetido", $2);
           }
         }
         | tipoSimp IDEN_ CORA_ CTE_ CORC_ PUNTCOMA_
@@ -106,7 +108,7 @@ declaVar: tipoSimp IDEN_ PUNTCOMA_
           if (insTdS($2, VARIABLE, $1, niv, dvar, ref)) {
             dvar += TALLA_TIPO_SIMPLE * elems;
           } else {
-            yyerror("Identificador repetido");
+            yyerrorf("Identificador <%s> repetido", $2);
           }
         }
         ;
