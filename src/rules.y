@@ -100,7 +100,10 @@ declaVar: tipoSimp IDEN_ PUNTCOMA_
             elems = 0;
           }
 
-          if (insTdS($2, VARIABLE, $1, niv, dvar, REF_SIMPLE)) {
+          // reserva espacio para los elementos dado su tipo.
+          int ref = insTdA($1, elems);
+
+          if (insTdS($2, VARIABLE, $1, niv, dvar, ref)) {
             dvar += TALLA_TIPO_SIMPLE * elems;
           } else {
             yyerror("Identificador repetido");
