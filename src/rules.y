@@ -162,6 +162,14 @@ inst: LLAVA_ listInst LLAVC_
     ;
 
 instSwitch: SWITCH_ IDEN_ LLAVA_ Less Equal Greater LLAVC_
+          {
+            SIMB s = obTDS($2);
+            if (s.t == T_ERROR) {
+              yyerrorf("Identificador <%s> no declarado", $2);
+            } else if (s.t != T_ENTERO || s.ref != REF_SIMPLE) {
+              yyerror("El identificador del switch debe ser de tipo entero");
+            }
+          }
           ;
 
 Less: LESS_ inst
@@ -182,6 +190,11 @@ instEntSal: READ_ PARA_ IDEN_ PARC_ PUNTCOMA_
           ;
 
 instSelec: IF_ PARA_ expre PARC_ inst ELSE_ inst
+        {
+          if ($3 != T_ERROR && $3 != T_LOGICO){
+            yyerror("La expresión del 'if' debe ser lógica");
+          }
+        }
          ;
 
 instIter: FOR_ PARA_ expreOP PUNTCOMA_ expre PUNTCOMA_ expreOP PARC_ inst
