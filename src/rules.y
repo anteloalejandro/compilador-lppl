@@ -163,7 +163,7 @@ listInst:
         | listInst inst
         ;
 
-inst: LLAVA_ listInst LLAVC_
+inst: LLAVA_ listInst LLAVC_ 
     | instExpre
     | instEntSal
     | instSelec
