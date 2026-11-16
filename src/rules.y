@@ -83,6 +83,7 @@ decla: declaVar
      {
        descargaContexto(niv);
        niv = 0;
+       dvar = dvar_copy;
      }
      ;
 
