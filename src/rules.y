@@ -51,7 +51,14 @@
 %type <tipo> tipoSimp
 
 %%
-programa: listDecla {
+programa:
+        {
+          niv = 0; // nivel global
+          dvar = 0;
+          cargaContexto(niv);
+        }
+        listDecla
+        {
             if (verTdS) mostrarTdS();
 
             SIMB s = obtTdS("main");
@@ -66,7 +73,17 @@ listDecla: decla
          ;
 
 decla: declaVar
-     | declaFunc
+     |
+     {
+       niv = 1; // nivel local de la función
+       dvar_copy = dvar;
+       cargaContexto(niv);
+     }
+     declaFunc
+     {
+       descargaContexto(niv);
+       niv = 0;
+     }
      ;
 
 const: CTE_ { $$ = (int)$1; }
