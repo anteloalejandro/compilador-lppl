@@ -48,7 +48,7 @@
 
 %type <cte> const
 
-%type <tipo> tipoSimp
+%type <tipo> tipoSimp expre expreOP
 
 %%
 programa:
@@ -185,10 +185,22 @@ instSelec: IF_ PARA_ expre PARC_ inst ELSE_ inst
          ;
 
 instIter: FOR_ PARA_ expreOP PUNTCOMA_ expre PUNTCOMA_ expreOP PARC_ inst
+        {
+          if ($5 != T_ERROR && $5 != T_LOGICO){
+            yyerror("La expresión del 'for' debe ser lógica");
+          }
+        }
         ;
 
-expreOP:
-       | expre
+expreOP:  {$$ = T_VACIO;}
+       | expre  {
+          if ($1 != T_ERROR && $1 != T_ENTERO && $1 != T_ENTERO){
+            yyerror("La 'expreOP' del for debe ser de tipo simple");  
+            $$ = T_ERROR;
+          } else {
+            $$ = $1;
+          }
+       }
        ;
 
 expre: expreLogic
