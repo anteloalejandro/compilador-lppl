@@ -46,6 +46,8 @@
 %token <cte> CTE_
 %token PUNTCOMA_ COMA_ 
 
+%type <iden> vec
+
 %type <cte> const
 
 %type <tipo> tipoSimp expre expreOP
@@ -218,7 +220,33 @@ expreOP:  {$$ = T_VACIO;}
 
 expre: expreLogic
      | IDEN_ ASIG_ expre
+      {
+        SIMB s = obtTdS($1);
+        SIMB s2 = obtTdS($3);
+        if (s.t == T_ERROR) {
+          yyerrorf("Identificador <%s> no declarado", $1);
+        }
+      }
      | IDEN_ CORA_ expre CORC_ ASIG_ expre
+      {
+        SIMB s = obtTdS($1);
+        if (s.t == T_ERROR) {
+          yyerrorf("Identificador <%s> no declarado", $1);
+        } 
+          else if ($2 == CORA_ && s.ref == 3) 
+          {
+            DIM d = obtTdA(s.ref);
+            if ($3 >= d.talla) {
+            yyerror("El índice del vector está fuera de rango");
+            }
+            if ($6 != T_ERROR && $6 != s.t) {
+              yyerror("El tipo de la expresión no coincide con el tipo del identificador");
+            }
+          } else {
+            yyerror("El identificador debe ser un vector");
+        }
+      }
+      
      ;
 
 expreLogic: expreIgual

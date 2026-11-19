@@ -81,7 +81,7 @@ Además, si se espera que el test no falle y sí falla, se mostrará el mensaje 
 - [x] El tipo lógico, `bool`, se representa numéricamente como un entero: con el valor 0 para el caso falso y 1 para el caso verdadero.
 - [ ] No existe conversión de tipos entre `int` y `bool`.
 - [x] La talla de los tipos simples, entero y lógico, debe definirse mediante la constante `TALLA_TIPO_SIMPLE` en el fichero `header.h` del directorio `include`.
-- [ ] Los índices de los vectores van de 0 a `cte-1`, siendo cte el número de elementos definido en su declaración. ~~El número de elementos de un vector debe ser un entero positivo.~~
+- [x] Los índices de los vectores van de 0 a `cte-1`, siendo cte el número de elementos definido en su declaración. ~~El número de elementos de un vector debe ser un entero positivo.~~
 - [ ] En las instrucciones read y write el identificador y la expresión respectivamente deben ser de tipo entero.
 - [ ] La instrucción `for` es similar a la del C. Las expresiones opcionales son expresiones, pudiendo no aparecer explíıcitamente, y la expresión debe ser de tipo lógico y debe aparecer explícitamente.
 - [ ] La expresión de la instrucción `if-else` debe ser de tipo lógico.
