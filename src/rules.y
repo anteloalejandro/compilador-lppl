@@ -223,8 +223,12 @@ expre: expreLogic
       {
         SIMB s = obtTdS($1);
         SIMB s2 = obtTdS($3);
-        if (s.t == T_ERROR) {
+        if (s.t == T_ERROR ) {
           yyerrorf("Identificador <%s> no declarado", $1);
+        }else if (s2.t == T_ERROR) {
+          yyerrorf("Identificador <%s> no declarado", $3);
+        }else if ((s.t == BOOL_ && s2.t == INT_) || (s.t == INT_ && s2.t == BOOL_)) {
+          yyerror("No se puede asignar un valor entero a un booleano");
         }
       }
      | IDEN_ CORA_ expre CORC_ ASIG_ expre
