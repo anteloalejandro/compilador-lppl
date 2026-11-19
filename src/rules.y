@@ -188,7 +188,23 @@ instExpre: expre PUNTCOMA_
          ;
 
 instEntSal: READ_ PARA_ IDEN_ PARC_ PUNTCOMA_
+          {
+            SIMB s = obtTdS($3);
+            if (s.t == T_ERROR) {
+              yyerrorf("Identificador <%s> no declarado", $3);
+            } else if (s.t != T_ENTERO || s.ref != REF_SIMPLE) {
+              yyerror("El identificador del read debe ser de tipo entero");
+            }
+          }
           | PRINT_ PARA_ expre PARC_ PUNTCOMA_
+          {
+            SIMB s = obtTdS($3);
+            if (s.t == T_ERROR) {
+              yyerrorf("Identificador <%s> no declarado", $3);
+            } else if (s.t != T_ENTERO) {
+              yyerror("La expresión del print debe ser de tipo entero");
+            }
+          }
           ;
 
 instSelec: IF_ PARA_ expre PARC_ inst ELSE_ inst
