@@ -216,3 +216,16 @@ bool: TRUE_  { $$ = $1; } // $$ y $1 son cte
 `$$` es el valor semántico de la parte izquierda de la producción. Nunca vale nada, y sólo usaremos para darle el valor semántico a dicha producción. **Sólo se puede asignar valor a `$$` en la última acción semántica**
 
 *El valor semántico de los tokens **debe darse** en `lexer.l`.*
+
+**Recuperación de errores**
+
+Por defecto, cuando lanzamos un `yyerror` no detenemos el flujo del programa, si no que intentamos restaurarlo a un estado que permita que todo siga funcionando (en medida de lo posible) **como si no hubiese ocurrido un error** en primer lugar.
+
+Esto nos permite captar también los errores subsecuentes.
+
+Por ejemplo, en `expreMul`, si uno de los dos operandos no es de tipo entero tenemos un error. Sin embargo, deberíamos devolver `T_ENTERO` para permitir que el resto de producciones que usan `expreMul`, que esperan que sea un entero, puedan funcionar (o devolver sus propios errores).
+
+Así conseguimos que el siguiente ejemplo lance un sólo error, y no más de 4.
+```c
+int a = (true * 2) + 2 - 4;
+```

@@ -50,6 +50,8 @@
 
 %type <tipo> tipoSimp expre expreOP 
 %type <tipo> expreLogic expreIgual expreRel expreAd expreMul expreUna expreSufi
+%type <tipo> opUna // para diferenciar entre +/- y !.
+%type <tipo> listParamAct paramAct // la coma también es un operador
 
 %%
 programa:
@@ -274,33 +276,44 @@ expre: expreLogic { $$ = T_LOGICO; }
 
 expreLogic: expreIgual
           {
-            comprueba_tipo(T_LOGICO, $1);
-
-            // aunque dé error, tiramos palante
-            $$ = T_LOGICO;
+            $$ = comprueba_tipo_simple($1) ? $1 : T_ERROR;
           }
           | expreLogic opLogic expreIgual
           {
-            comprueba_tipo_l(T_LOGICO, $1);
-            comprueba_tipo_r(T_LOGICO, $3);
+            // expreLogic puede ser tipo entero o lógico por ambas producciones.
+            int t_lhs = comprueba_tipo_simple_l($1) ? $1 : T_ERROR;
 
-            $$ = T_LOGICO;
+            // expreIgual puede ser tipo entero o lógico por ambas producciones.
+            int t_rhs = comprueba_tipo_simple_r($1) ? $1 : T_ERROR;
+
+            int t_prod = reconcilia_tipos(t_lhs, t_rhs);
+
+            $$ = t_prod;
           }
           ;
 
 expreIgual: expreRel
           {
-            comprueba_tipo(T_LOGICO, $1);
-
-            // aunque dé error, tiramos palante
-            $$ = T_LOGICO;
+            $$ = comprueba_tipo_simple($1) ? $1 : T_ERROR;
           }
           | expreIgual opIgual expreRel
           {
-            comprueba_tipo_l(T_LOGICO, $1);
-            comprueba_tipo_r(T_LOGICO, $3);
+            // expreIgual puede ser tipo entero si viene de expreRel,
+            // o tipo lógico por por expreRel o la segunda producción.
+            int t_lhs = comprueba_tipo_simple_l($1) ? $1 : T_ERROR;
 
-            $$ = T_LOGICO;
+            // expreRel puede ser tipo entero si viene de expreAd,
+            // o tipo lógico por la segunda producción.
+            int t_rhs = comprueba_tipo_simple_r($1) ? $1 : T_ERROR;
+
+            // La producción tendrá tipo T_ERROR si:
+            // - Ambos lados dan error
+            // - Los tipos no se pueden reconciliar (entero + bool)
+            // Si una de los lados da error, pero el otro no,
+            // le damos el tipo del lado sin error (recuperación de errores).
+            int t_prod = reconcilia_tipos(t_lhs, t_rhs);
+
+            $$ = t_prod;
           }
           ;
 
@@ -313,8 +326,9 @@ expreRel: expreAd
           comprueba_tipo(T_ENTERO, $1);
           // El tipo de expreRel en esta producción tiene que ser entero
           // para poder hacer comparaciones en la siguiente producción.
+          // También hace falta para expreIgual.
           // NOTA: Si permitirmos comparaciones relativas entre booleanos, $$ = $1.
-          $$ = T_ENTERO; 
+          $$ = T_ENTERO;
         }
         | expreRel opRel expreAd
         {
@@ -326,35 +340,79 @@ expreRel: expreAd
         ;
 
 expreAd: expreMul
+       {
+         comprueba_tipo(T_ENTERO, $1);
+         
+         // aunque dé error, tiramos palante
+         $$ = T_ENTERO;
+       }
        | expreAd opAd expreMul
+       {
+         comprueba_tipo_l(T_ENTERO, $1);
+         comprueba_tipo_r(T_ENTERO, $3);
+
+         $$ = T_ENTERO;
+       }
        ;
 
 expreMul: expreUna
+        {
+          comprueba_tipo(T_ENTERO, $1);
+          
+          // aunque dé error, tiramos palante
+          $$ = T_ENTERO;
+        }
         | expreMul opMul expreUna
+        {
+          comprueba_tipo_l(T_ENTERO, $1);
+          comprueba_tipo_r(T_ENTERO, $3);
+
+          $$ = T_ENTERO;
+        }
         ;
 
-expreUna: expreSufi
+expreUna: expreSufi { $$ = $1; }
         | opUna expreUna
+        {
+          // expreUna puede ser ENTERO (+/- expreUna)
+          // o LOGICO (! expreUna)
+          comprueba_tipo($1, $2);
+          $$ = $1;
+        }
         ;
 
-expreSufi: const
-         | PARA_ expre PARC_
-         | IDEN_
+expreSufi: const { /*Hace falta que const también nos dé su tipo*/ }
+         | PARA_ expre PARC_ { $$ = $2; }
+         | IDEN_ { /* Hay que sacarlo de la TdS */ }
          | IDEN_ CORA_ expre CORC_
+         {
+           comprueba_tipo(T_ENTERO, $3);
+
+           // $$ = Tipo sacado de la TdS en base a IDEN_
+         }
          | IDEN_ PARA_ paramAct PARC_
+         {
+           // $$ = Tipo sacado de la TdS en base a IDEN_
+         }
          ;
 
-listParamAct: expre
+listParamAct: expre { $$ = $1; }
             | expre COMA_ listParamAct
+            {
+              // En C, la coma es un operador que devuelve
+              // el valor de su lado derecho.
+              // No aplica conversión de tipos de por sí.
+              $$ = $3;
+            }
             ;
 
-paramAct:
-        | listParamAct
+paramAct: { $$ = T_VACIO; }
+        | listParamAct { $$ = $1; }
         ;
 
-opUna: MAS_
-     | MENOS_
-     | NOT_
+opUna: MAS_ { $$ = T_ENTERO; }
+     | MENOS_ { $$ = T_ENTERO; }
+     | NOT_ { $$ = T_LOGICO; }
      ;
 
 opMul: POR_
