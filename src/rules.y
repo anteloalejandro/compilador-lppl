@@ -46,11 +46,10 @@
 %token <cte> CTE_
 %token PUNTCOMA_ COMA_ 
 
-%type <iden> vec
-
 %type <cte> const
 
-%type <tipo> tipoSimp expre expreOP
+%type <tipo> tipoSimp expre expreOP 
+%type <tipo> expreLogic expreIgual expreRel expreAd expreMul expreUna expreSufi
 
 %%
 programa:
@@ -224,8 +223,8 @@ instIter: FOR_ PARA_ expreOP PUNTCOMA_ expre PUNTCOMA_ expreOP PARC_ inst
         ;
 
 expreOP:  {$$ = T_VACIO;}
-       | expre  {
-          if ($1 != T_ERROR && $1 != T_ENTERO && $1 != T_ENTERO){
+       | expre {
+          if ($1 != T_ERROR && $1 != T_ENTERO && $1 != T_LOGICO){
             yyerror("La 'expreOP' del for debe ser de tipo simple");  
             $$ = T_ERROR;
           } else {
@@ -234,7 +233,7 @@ expreOP:  {$$ = T_VACIO;}
        }
        ;
 
-expre: expreLogic
+expre: expreLogic { $$ = T_LOGICO; }
      | IDEN_ ASIG_ expre
       {
         SIMB s = obtTdS($1);
@@ -253,6 +252,7 @@ expre: expreLogic
         if (s.t == T_ERROR) {
           yyerrorf("Identificador <%s> no declarado", $1);
         } 
+          // Y esto qué es?
           else if ($2 == CORA_ && s.ref == 3) 
           {
             DIM d = obtTdA(s.ref);
@@ -265,20 +265,64 @@ expre: expreLogic
           } else {
             yyerror("El identificador debe ser un vector");
         }
+
+        // en C, las asignaciones devuelven el valor que asignan
+        $$ = $6;
       }
       
      ;
 
 expreLogic: expreIgual
+          {
+            comprueba_tipo(T_LOGICO, $1);
+
+            // aunque dé error, tiramos palante
+            $$ = T_LOGICO;
+          }
           | expreLogic opLogic expreIgual
+          {
+            comprueba_tipo_l(T_LOGICO, $1);
+            comprueba_tipo_r(T_LOGICO, $3);
+
+            $$ = T_LOGICO;
+          }
           ;
 
 expreIgual: expreRel
+          {
+            comprueba_tipo(T_LOGICO, $1);
+
+            // aunque dé error, tiramos palante
+            $$ = T_LOGICO;
+          }
           | expreIgual opIgual expreRel
+          {
+            comprueba_tipo_l(T_LOGICO, $1);
+            comprueba_tipo_r(T_LOGICO, $3);
+
+            $$ = T_LOGICO;
+          }
           ;
 
 expreRel: expreAd
+        {
+          // NOTA: no hay conversión de tipos,
+          // así que tiene pinta de que aquí siempre da error
+          // porque expreAd siempre es T_ENTERO y expreRel debe ser T_LOGICO.
+          // Sin embargo, eso haría que todas las comparaciones fallasen al menos una vez.
+          comprueba_tipo(T_ENTERO, $1);
+          // El tipo de expreRel en esta producción tiene que ser entero
+          // para poder hacer comparaciones en la siguiente producción.
+          // NOTA: Si permitirmos comparaciones relativas entre booleanos, $$ = $1.
+          $$ = T_ENTERO; 
+        }
         | expreRel opRel expreAd
+        {
+          comprueba_tipo_l(T_ENTERO, $1);
+          comprueba_tipo_r(T_ENTERO, $3);
+
+          $$ = T_LOGICO;
+        }
         ;
 
 expreAd: expreMul
