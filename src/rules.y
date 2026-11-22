@@ -235,7 +235,7 @@ expreOP:  {$$ = T_VACIO;}
        }
        ;
 
-expre: expreLogic { $$ = T_LOGICO; }
+expre: expreLogic { $$ = $1; }
      | IDEN_ ASIG_ expre
       {
         SIMB s = obtTdS($1);
@@ -274,17 +274,14 @@ expre: expreLogic { $$ = T_LOGICO; }
       
      ;
 
-expreLogic: expreIgual
-          {
-            $$ = comprueba_tipo_simple($1) ? $1 : T_ERROR;
-          }
+expreLogic: expreIgual { $$ = $1; }
           | expreLogic opLogic expreIgual
           {
             // expreLogic puede ser tipo entero o lógico por ambas producciones.
             int t_lhs = comprueba_tipo_simple_l($1) ? $1 : T_ERROR;
 
             // expreIgual puede ser tipo entero o lógico por ambas producciones.
-            int t_rhs = comprueba_tipo_simple_r($1) ? $1 : T_ERROR;
+            int t_rhs = comprueba_tipo_simple_r($3) ? $3 : T_ERROR;
 
             int t_prod = reconcilia_tipos(t_lhs, t_rhs);
 
@@ -292,10 +289,7 @@ expreLogic: expreIgual
           }
           ;
 
-expreIgual: expreRel
-          {
-            $$ = comprueba_tipo_simple($1) ? $1 : T_ERROR;
-          }
+expreIgual: expreRel { $$ = $1; }
           | expreIgual opIgual expreRel
           {
             // expreIgual puede ser tipo entero si viene de expreRel,
@@ -304,7 +298,7 @@ expreIgual: expreRel
 
             // expreRel puede ser tipo entero si viene de expreAd,
             // o tipo lógico por la segunda producción.
-            int t_rhs = comprueba_tipo_simple_r($1) ? $1 : T_ERROR;
+            int t_rhs = comprueba_tipo_simple_r($3) ? $3 : T_ERROR;
 
             // La producción tendrá tipo T_ERROR si:
             // - Ambos lados dan error
@@ -317,35 +311,19 @@ expreIgual: expreRel
           }
           ;
 
-expreRel: expreAd
-        {
-          // NOTA: no hay conversión de tipos,
-          // así que tiene pinta de que aquí siempre da error
-          // porque expreAd siempre es T_ENTERO y expreRel debe ser T_LOGICO.
-          // Sin embargo, eso haría que todas las comparaciones fallasen al menos una vez.
-          comprueba_tipo(T_ENTERO, $1);
-          // El tipo de expreRel en esta producción tiene que ser entero
-          // para poder hacer comparaciones en la siguiente producción.
-          // También hace falta para expreIgual.
-          // NOTA: Si permitirmos comparaciones relativas entre booleanos, $$ = $1.
-          $$ = T_ENTERO;
-        }
+expreRel: expreAd { $$ = $1; }
         | expreRel opRel expreAd
         {
           comprueba_tipo_l(T_ENTERO, $1);
           comprueba_tipo_r(T_ENTERO, $3);
 
+          // NOTA: Si consideramos que se pueden comparar
+          // dos bool también, habría que cambiar esto.
           $$ = T_LOGICO;
         }
         ;
 
-expreAd: expreMul
-       {
-         comprueba_tipo(T_ENTERO, $1);
-         
-         // aunque dé error, tiramos palante
-         $$ = T_ENTERO;
-       }
+expreAd: expreMul { $$ = $1; }
        | expreAd opAd expreMul
        {
          comprueba_tipo_l(T_ENTERO, $1);
@@ -355,13 +333,7 @@ expreAd: expreMul
        }
        ;
 
-expreMul: expreUna
-        {
-          comprueba_tipo(T_ENTERO, $1);
-          
-          // aunque dé error, tiramos palante
-          $$ = T_ENTERO;
-        }
+expreMul: expreUna { $$ = $1; }
         | expreMul opMul expreUna
         {
           comprueba_tipo_l(T_ENTERO, $1);
