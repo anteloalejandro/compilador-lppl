@@ -1,19 +1,19 @@
 %{
   #include "header.h"
-  #include "libtds.h"
   #include "helpers.h"
+  #include "libtds.h"
   extern int yylineno;
 
-  struct cte_tipo {
-    int cte;
-    int tipo;
-  };
+  int dvar_copy;
 %}
 
 %union {
   int cte;
   int tipo;
-  struct cte_tipo cte_tipo;
+  struct constante {
+    int cte;
+    int tipo;
+  } constante;
   char *iden;
 }
 
@@ -52,7 +52,7 @@
 %token <cte> CTE_
 %token PUNTCOMA_ COMA_ 
 
-%type <cte_tipo> const
+%type <constante> const
 
 %type <tipo> tipoSimp expre expreOP 
 %type <tipo> expreLogic expreIgual expreRel expreAd expreMul expreUna expreSufi
@@ -96,9 +96,9 @@ decla: declaVar
      }
      ;
 
-const: CTE_ { $$ = { .cte = $1, .tipo = T_ENTERO }; }
-     | TRUE_ { $$ = { .cte = $1, .tipo = T_LOGICO }; }
-     | FALSE_ { $$ = { .cte = $1, .tipo = T_LOGICO }; }
+const: CTE_ { $$ = (struct constante){ .cte = $1, .tipo = T_ENTERO }; }
+     | TRUE_ { $$ = (struct constante){ .cte = $1, .tipo = T_LOGICO }; }
+     | FALSE_ { $$ = (struct constante){ .cte = $1, .tipo = T_LOGICO }; }
      ;
 
 tipoSimp: BOOL_ { $$ = T_LOGICO; }
@@ -207,10 +207,7 @@ instEntSal: READ_ PARA_ IDEN_ PARC_ PUNTCOMA_
           }
           | PRINT_ PARA_ expre PARC_ PUNTCOMA_
           {
-            SIMB s = obtTdS($3);
-            if (s.t == T_ERROR) {
-              yyerrorf("Identificador <%s> no declarado", $3);
-            } else if (s.t != T_ENTERO) {
+            if ($3 != T_ENTERO) {
               yyerror("La expresión del print debe ser de tipo entero");
             }
           }
@@ -373,20 +370,33 @@ expreSufi: const { $$ = $1.tipo; }
          {
            SIMB s = obtTdS($1);
            if (s.t == T_ERROR) {
-             yyerrorf("<%s> no ha sido declarado");
+             yyerrorf("<%s> no ha sido declarado", $1);
            }
 
            $$ = s.t;
          }
          | IDEN_ CORA_ expre CORC_
          {
-           comprueba_tipo(T_ENTERO, $3);
+           SIMB s = obtTdS($1);
 
-           // $$ = Tipo sacado de la TdS en base a IDEN_
+           if (s.t == T_ERROR) {
+             yyerrorf("<%s> no ha sido declarado", $1);
+           } else if (s.t != T_ARRAY) {
+             yyerrorf("<%s> debería ser un T_ARRAY, pero es un %s", $1, string_tipo[s.t]);
+           }
+
+           if ($3 != T_ENTERO) {
+             yyerror("El subíndice debe ser T_ENTERO");
+           }
+
+           $$ = s.t;
          }
          | IDEN_ PARA_ paramAct PARC_
          {
-           // $$ = Tipo sacado de la TdS en base a IDEN_
+           SIMB s = obtTdS($1);
+           if (s.t == T_ERROR) {
+             yyerrorf("<%s> no ha sido declarado", $1);
+           }
          }
          ;
 
