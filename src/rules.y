@@ -3,11 +3,17 @@
   #include "libtds.h"
   #include "helpers.h"
   extern int yylineno;
+
+  struct cte_tipo {
+    int cte;
+    int tipo;
+  };
 %}
 
 %union {
   int cte;
-  unsigned int tipo;
+  int tipo;
+  struct cte_tipo cte_tipo;
   char *iden;
 }
 
@@ -46,7 +52,7 @@
 %token <cte> CTE_
 %token PUNTCOMA_ COMA_ 
 
-%type <cte> const
+%type <cte_tipo> const
 
 %type <tipo> tipoSimp expre expreOP 
 %type <tipo> expreLogic expreIgual expreRel expreAd expreMul expreUna expreSufi
@@ -90,9 +96,9 @@ decla: declaVar
      }
      ;
 
-const: CTE_ { $$ = (int)$1; }
-     | TRUE_ { $$ = $1; }
-     | FALSE_ { $$ = $1; }
+const: CTE_ { $$ = { .cte = $1, .tipo = T_ENTERO }; }
+     | TRUE_ { $$ = { .cte = $1, .tipo = T_LOGICO }; }
+     | FALSE_ { $$ = { .cte = $1, .tipo = T_LOGICO }; }
      ;
 
 tipoSimp: BOOL_ { $$ = T_LOGICO; }
@@ -109,6 +115,8 @@ declaVar: tipoSimp IDEN_ PUNTCOMA_
         }
         | tipoSimp IDEN_ ASIG_ const PUNTCOMA_
         {
+          comprueba_tipo($1, $4.tipo);
+
           if (insTdS($2, VARIABLE, $1, niv, dvar, REF_SIMPLE)) {
             dvar += TALLA_TIPO_SIMPLE;
           } else {
@@ -353,7 +361,7 @@ expreUna: expreSufi { $$ = $1; }
         }
         ;
 
-expreSufi: const { /*Hace falta que const también nos dé su tipo*/ }
+expreSufi: const { $$ = $1.tipo; }
          | PARA_ expre PARC_ { $$ = $2; }
          | IDEN_ { /* Hay que sacarlo de la TdS */ }
          | IDEN_ CORA_ expre CORC_
