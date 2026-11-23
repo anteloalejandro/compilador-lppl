@@ -174,7 +174,7 @@ inst: LLAVA_ listInst LLAVC_
 
 instSwitch: SWITCH_ IDEN_ LLAVA_ Less Equal Greater LLAVC_
           {
-            SIMB s = obTDS($2);
+            SIMB s = obtTdS($2);
             if (s.t == T_ERROR) {
               yyerrorf("Identificador <%s> no declarado", $2);
             } else if (s.t != T_ENTERO || s.ref != REF_SIMPLE) {
@@ -245,36 +245,42 @@ expreOP:  {$$ = T_VACIO;}
 
 expre: expreLogic { $$ = $1; }
      | IDEN_ ASIG_ expre
-      {
-        SIMB s = obtTdS($1);
-        SIMB s2 = obtTdS($3);
-        if (s.t == T_ERROR ) {
-          yyerrorf("Identificador <%s> no declarado", $1);
-        }else if (s2.t == T_ERROR) {
-          yyerrorf("Identificador <%s> no declarado", $3);
-        }else if ((s.t == BOOL_ && s2.t == INT_) || (s.t == INT_ && s2.t == BOOL_)) {
-          yyerror("No se puede asignar un valor entero a un booleano");
-        }
-      }
+     {
+       SIMB s = obtTdS($1);
+       if (s.t == T_ERROR) {
+         yyerrorf("Identificador <%s> no declarado", $1);
+       } else {
+         comprueba_tipo(s.t, $3);
+       }
+     }
      | IDEN_ CORA_ expre CORC_ ASIG_ expre
       {
         SIMB s = obtTdS($1);
         if (s.t == T_ERROR) {
           yyerrorf("Identificador <%s> no declarado", $1);
-        } 
-          // Y esto qué es?
-          else if ($2 == CORA_ && s.ref == 3) 
-          {
-            DIM d = obtTdA(s.ref);
-            if ($3 >= d.talla) {
-            yyerror("El índice del vector está fuera de rango");
-            }
-            if ($6 != T_ERROR && $6 != s.t) {
-              yyerror("El tipo de la expresión no coincide con el tipo del identificador");
-            }
-          } else {
-            yyerror("El identificador debe ser un vector");
+        } else if (s.t != T_ARRAY) {
+          yyerrorf("<%s> no es de tipo T_ARRAY", $1);
         }
+
+        if ($3 != T_ENTERO) {
+          yyerrorf("El subíndice de <%s> debe ser un entero", $1);
+        }
+        if ($6 != s.t) {
+          DIM d = obtTdA(s.ref);
+          yyerrorf("<%s> es un %s[], se ha intentado asignar un %s",
+            $1,
+            string_tipo[d.telem],
+            string_tipo[s.t]
+          );
+        }
+
+        // NOTA: No sabemos el valor de expre en este punto,
+        // porque puede ser un `const` (sabemos su valor)
+        // o otra cosa (no sabemos su valor).
+        // DIM d = obtTdA(s.ref);
+        // if ($3 == 0 || $3 >= d.nelem) {
+        //   yyerror("El subíndice de %s es %d, debe estar en el rango (0..%d)", $1, $3, d.nelem);
+        // }
 
         // en C, las asignaciones devuelven el valor que asignan
         $$ = $6;
@@ -363,7 +369,15 @@ expreUna: expreSufi { $$ = $1; }
 
 expreSufi: const { $$ = $1.tipo; }
          | PARA_ expre PARC_ { $$ = $2; }
-         | IDEN_ { /* Hay que sacarlo de la TdS */ }
+         | IDEN_
+         {
+           SIMB s = obtTdS($1);
+           if (s.t == T_ERROR) {
+             yyerrorf("<%s> no ha sido declarado");
+           }
+
+           $$ = s.t;
+         }
          | IDEN_ CORA_ expre CORC_
          {
            comprueba_tipo(T_ENTERO, $3);
