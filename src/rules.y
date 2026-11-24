@@ -2,7 +2,6 @@
   #include "header.h"
   #include "helpers.h"
   #include "libtds.h"
-  extern int yylineno;
 
   int dvar_copy;
 %}

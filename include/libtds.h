@@ -40,8 +40,8 @@ typedef struct inf  /* Estructura para las funciones                         */
 }INF;
 
 /*************************** Variables globales de uso en todo el compilador */
-int dvar;                     /* Desplazamiento en el Segmento de Variables  */
-int niv;                      /* Nivel de anidamiento "global" o "local"     */
+extern int dvar;                     /* Desplazamiento en el Segmento de Variables  */
+extern int niv;                      /* Nivel de anidamiento "global" o "local"     */
 
 /************************************* Operaciones para la gestion de la TDS */
 

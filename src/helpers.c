@@ -4,6 +4,15 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+// Traduce los tipos de libtds.h a strings
+const char *string_tipo[] = {
+  "T_VACIO",
+  "T_ENTERO",
+  "T_LOGICO",
+  "T_ARRAY",
+  "T_ERROR"
+};
+
 void yyerrorf(const char *restrict format, ...) {
   static char buf[MAX_YYERRORF_CHARS] = "";
   va_list args;

@@ -5,14 +5,7 @@
 
 #define MAX_YYERRORF_CHARS 1024
 
-// Traduce los tipos de libtds.h a strings
-const char *string_tipo[] = {
-  "T_VACIO",
-  "T_ENTERO",
-  "T_LOGICO",
-  "T_ARRAY",
-  "T_ERROR"
-};
+extern const char *string_tipo[];
 
 // yyerror con formato estilo printf
 void yyerrorf(const char *format, ...);
