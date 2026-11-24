@@ -54,7 +54,7 @@ void descargaContexto (int n) ;
 
 /* Inserta en la TDS toda la informacion asociada con una variable de nombre,
    "nom"; categoria, "cat"; tipo, "tipo"; nivel del bloque, "n"; desplaza-
-   miento relativo en el segmento de variables, "des" y referencia, "ref", 
+   miento relativo en el segmento de variables, "desp" y referencia, "ref", 
    a posibles subtablas de vectores, registros o dominios (siendo (-1) si es 
    de tipo simple). Si la variable ya existe devuelve el valor "FALSE=0" 
    ("TRUE=1" en caso contrario).                                             */

@@ -145,18 +145,27 @@ declaVarLocal:
              | declaVarLocal declaVar
              ;
 
-listParamForm: tipoSimp IDEN_
+listParamForm: tipoSimp IDEN_ { insTdD() }
              | tipoSimp IDEN_ COMA_ listParamForm
+			 {
+               $$ = insTdD($4, $1); 
+               insTdS($2, PARAMETRO, $1, niv, desp_param, -1);
+             }
              ;
 
 paramForm:
-         | listParamForm
+         | listParamForm { $$ = $1; } 
          ;
 
 bloque: LLAVA_ declaVarLocal listInst RETURN_ expre PUNTCOMA_ LLAVC_
       ;
 
-declaFunc: tipoSimp IDEN_ PARA_ paramForm PARC_ bloque 
+declaFunc: tipoSimp IDEN_ PARA_ paramForm PARC_ 
+	 	{
+		   if (!insTdS($2, FUNCION, $1, niv - 1, dvar, $4)) 
+			 yyerrorf("Identificador de función <%s> repetido", $2);
+		}
+		 bloque 
          ;
 
 listInst:
