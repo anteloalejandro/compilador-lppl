@@ -1,7 +1,7 @@
 ## Requisitos
 
 - `make`
-- `gcc` o `clang`
+- `gcc`
 - `flex`
 - `bison`
 
@@ -42,9 +42,15 @@ make lexer # también re-ejecuta `make rules`
 
 **Requiere que `python` esté instalado.**
 
-*Por el momento, sólo hay soporte para tests del analizador léxico y sintáctico, que están en el directorio `tests/lex_sin`*
+*Por el momento, sólo hay soporte para tests del analizador léxico y sintáctico, que están en el directorio `tests/corpus`*
 
-Se crean tests en el directorio correspondiente: `bad` si debería fallar al procesar al fichero y `good` si no. Una vez creados, se ejecuta el subcomando de `make` correspondiente:
+Los tests se añaden como ficheros en el directorio `corpus`, los cuales empiezan con un comentario **en la primera línea** que indica el número de errores esperado después de el último `:`.
+
+```c
+// Ejemplo de manipulacion de funciones: 10 errores
+```
+
+Si el comentario no existe o no indica el número de errores, se asume que el número de errores esperado es 0.
 
 ```bash
 make test
@@ -56,7 +62,12 @@ Este comando mostrará los resultados del test y los guardará en el fichero `.t
 
 Los tests de los que se obtenga el resultado esperado, estarán marcados con un 🟩, y los que no con un 🟥.
 
-Además, si se espera que el test no falle y sí falla, se mostrará el mensaje de error con el que ha fallado.
+### Modificaciones en los tests
+
+Los tests `b00.c` y `b05.c` han tenido que ser modificados porque, aparentemente, no estaban bien definidos.
+
+- `b00.c` usaba `_` para los identificadores, cuando en nuestra definición usan `-`.
+- `b05.c` no separaba `y-x`, que según como está definido en nuestra gramática, corresponde con un identificador. Se ha sustituido por `y - x`, que sí se reconoce como una resta.
 
 ## POR HACER
 
