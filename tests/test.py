@@ -84,8 +84,17 @@ def test(dir: str, show_error: bool) -> int:
 
 errors = 0
 
-errors = errors + test(f"{cwd}/corpus", VERBOSE)
+corpus = f"{cwd}/corpus"
+generated = f"{cwd}/generated"
+
+errors = errors + test(corpus, VERBOSE)
 
 if errors > 0: print(f"\n{errors} tests fallidos")
+
+if not os.path.exists(generated):
+    os.mkdir(generated)
+
+for p in filter(lambda p: p.endswith(".c3d"), os.listdir(corpus)):
+    os.rename(os.path.join(corpus, p), os.path.join(generated, p))
 
 exit(errors)

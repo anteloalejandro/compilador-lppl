@@ -42,6 +42,7 @@ test: .test.log
 
 clean:
 	rm -r $(BINDIR)/main $(OBJDIR) .test.log 2>/dev/null
+	rm -r tests/generated
 
 .test.log: $(BINDIR)/main $(TESTS)
 	python3 tests/test.py | tee .test.log
