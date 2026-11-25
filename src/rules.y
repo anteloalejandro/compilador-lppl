@@ -59,7 +59,7 @@
 %type <tipo> opUna // para diferenciar entre +/- y !.
 %type <tipo> listParamAct paramAct // la coma también es un operador
 
-%type <tipo> paramForm listParamForm
+%type <tipo> paramForm listParamForm bloque
 
 %%
 programa:
@@ -162,6 +162,9 @@ paramForm: { $$ = insTdD(-1, T_VACIO); }
          ;
 
 bloque: LLAVA_ declaVarLocal listInst RETURN_ expre PUNTCOMA_ LLAVC_
+      {
+        $$ = $5;
+      }
       ;
 
 declaFunc: tipoSimp IDEN_ 
@@ -180,6 +183,10 @@ declaFunc: tipoSimp IDEN_
 		 }
 		 bloque 
 		 {
+		   INF inf = obtTdD(-1);
+		   if (inf.tipo != T_ERROR && $7 != T_ERROR && inf.tipo != $7) {
+		     yyerrorf("El tipo de retorno en <%s> no coincide con su declaración", $2);
+		   }
 		   if (verTdS) mostrarTdS();
 		   descargaContexto(niv);
 		   niv = 0;
@@ -419,16 +426,22 @@ expreSufi: const { $$ = $1.tipo; }
            $$ = s.t;
          }
          | IDEN_ PARA_ paramAct PARC_
-		 {
+		     {
            SIMB s = obtTdS($1);
            if (s.t == T_ERROR) {
              yyerrorf("<%s> no ha sido declarado", $1);
              $$ = T_ERROR;
            } else {
-             if (!cmpDom(s.ref, $3)) {
+             INF inf = obtTdD(s.ref);
+             if (inf.tipo == T_ERROR) {
+               yyerrorf("<%s> no es una función", $1);
+               $$ = T_ERROR;
+             } else if (!cmpDom(s.ref, $3)) {
                yyerrorf("Error en los parámetros de la llamada a <%s>", $1);
+               $$ = T_ERROR;
+             } else {
+               $$ = inf.tipo;
              }
-             $$ = s.t;
            }
          }
          ;
