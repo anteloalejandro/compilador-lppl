@@ -259,7 +259,7 @@ instSelec: IF_ PARA_ expre PARC_ inst ELSE_ inst
 instIter: FOR_ PARA_ expreOP PUNTCOMA_ expre PUNTCOMA_ expreOP PARC_ inst
         {
           if ($5 != T_ERROR && $5 != T_LOGICO){
-            yyerror("La expresión del 'for' debe ser lógica");
+            yyerrorf("La expresión del 'for' debe ser lógica, pero es %s", string_tipo[$5]);
           }
         }
         ;
@@ -267,7 +267,7 @@ instIter: FOR_ PARA_ expreOP PUNTCOMA_ expre PUNTCOMA_ expreOP PARC_ inst
 expreOP:  {$$ = T_VACIO;}
        | expre {
           if ($1 != T_ERROR && $1 != T_ENTERO && $1 != T_LOGICO){
-            yyerror("La 'expreOP' del for debe ser de tipo simple");  
+            yyerrorf("La 'expreOP' del for debe ser de tipo simple, pero es %s", string_tipo[$1]);
             $$ = T_ERROR;
           } else {
             $$ = $1;
@@ -284,6 +284,8 @@ expre: expreLogic { $$ = $1; }
        } else {
          comprueba_tipo(s.t, $3);
        }
+
+      $$ = s.t;
      }
      | IDEN_ CORA_ expre CORC_ ASIG_ expre
       {
@@ -417,15 +419,18 @@ expreSufi: const { $$ = $1.tipo; }
 
            if (s.t == T_ERROR) {
              yyerrorf("<%s> no ha sido declarado", $1);
+             $$ = T_ERROR;
            } else if (s.t != T_ARRAY) {
              yyerrorf("<%s> debería ser un T_ARRAY, pero es un %s", $1, string_tipo[s.t]);
-           }
+             $$ = T_ERROR;
+           } else {
+            DIM d = obtTdA(s.ref);
+            if ($3 != T_ENTERO) {
+              yyerror("El subíndice debe ser T_ENTERO");
+            }
 
-           if ($3 != T_ENTERO) {
-             yyerror("El subíndice debe ser T_ENTERO");
+            $$ = d.telem;
            }
-
-           $$ = s.t;
          }
          | IDEN_ PARA_ paramAct PARC_
 		     {
