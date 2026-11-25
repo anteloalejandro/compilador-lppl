@@ -184,7 +184,7 @@ declaFunc: tipoSimp IDEN_
 		 bloque 
 		 {
 		   INF inf = obtTdD(-1);
-		   if (inf.tipo != T_ERROR && $7 != T_ERROR && inf.tipo != $7) {
+		   if (inf.tipo != T_ERROR && $8 != T_ERROR && inf.tipo != $8) {
 		     yyerrorf("El tipo de retorno en <%s> no coincide con su declaración", $2);
 		   }
 		   if (verTdS) mostrarTdS();
