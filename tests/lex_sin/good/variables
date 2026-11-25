@@ -1,6 +1,0 @@
-int valor;
-// el analizador léxico/sintáctico no comprueba repeticiones
-int valor = 10;
-int valor [4];
-int z = false;
-int z2 = true;
