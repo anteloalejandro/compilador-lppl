@@ -326,15 +326,10 @@ expre: expreLogic { $$ = $1; }
 expreLogic: expreIgual { $$ = $1; }
           | expreLogic opLogic expreIgual
           {
-            // expreLogic puede ser tipo entero o lógico por ambas producciones.
-            int t_lhs = comprueba_tipo_simple_l($1) ? $1 : T_ERROR;
+            comprueba_tipo_l(T_LOGICO, $1);
+            comprueba_tipo_r(T_LOGICO, $3);
 
-            // expreIgual puede ser tipo entero o lógico por ambas producciones.
-            int t_rhs = comprueba_tipo_simple_r($3) ? $3 : T_ERROR;
-
-            int t_prod = reconcilia_tipos(t_lhs, t_rhs);
-
-            $$ = t_prod;
+            $$ = T_LOGICO;
           }
           ;
 
@@ -343,31 +338,28 @@ expreIgual: expreRel { $$ = $1; }
           {
             // expreIgual puede ser tipo entero si viene de expreRel,
             // o tipo lógico por por expreRel o la segunda producción.
-            int t_lhs = comprueba_tipo_simple_l($1) ? $1 : T_ERROR;
+            comprueba_tipo_simple_l($1);
 
             // expreRel puede ser tipo entero si viene de expreAd,
             // o tipo lógico por la segunda producción.
-            int t_rhs = comprueba_tipo_simple_r($3) ? $3 : T_ERROR;
+            comprueba_tipo_simple_r($3);
 
-            // La producción tendrá tipo T_ERROR si:
-            // - Ambos lados dan error
-            // - Los tipos no se pueden reconciliar (entero + bool)
-            // Si una de los lados da error, pero el otro no,
-            // le damos el tipo del lado sin error (recuperación de errores).
-            int t_prod = reconcilia_tipos(t_lhs, t_rhs);
+            if ($1 != $3) {
+              yyerror("Sólo se pueden comparar dos expresiones con el mismo tipo");
+            }
 
-            $$ = t_prod;
+            $$ = T_LOGICO;
           }
           ;
 
 expreRel: expreAd { $$ = $1; }
         | expreRel opRel expreAd
         {
+          // NOTA: Si consideramos que se pueden comparar
+          // dos bool también, habría que cambiar esto.
           comprueba_tipo_l(T_ENTERO, $1);
           comprueba_tipo_r(T_ENTERO, $3);
 
-          // NOTA: Si consideramos que se pueden comparar
-          // dos bool también, habría que cambiar esto.
           $$ = T_LOGICO;
         }
         ;
