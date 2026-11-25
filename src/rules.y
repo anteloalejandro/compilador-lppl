@@ -4,6 +4,7 @@
   #include "libtds.h"
 
   int dvar_copy;
+  int desp_param;
 %}
 
 %union {
@@ -58,6 +59,8 @@
 %type <tipo> opUna // para diferenciar entre +/- y !.
 %type <tipo> listParamAct paramAct // la coma también es un operador
 
+%type <tipo> paramForm listParamForm
+
 %%
 programa:
         {
@@ -81,18 +84,7 @@ listDecla: decla
          ;
 
 decla: declaVar
-     |
-     {
-       niv = 1; // nivel local de la función
-       dvar_copy = dvar;
-       cargaContexto(niv);
-     }
-     declaFunc
-     {
-       descargaContexto(niv);
-       niv = 0;
-       dvar = dvar_copy;
-     }
+     | declaFunc
      ;
 
 const: CTE_ { $$ = (struct constante){ .cte = $1, .tipo = T_ENTERO }; }
@@ -145,27 +137,54 @@ declaVarLocal:
              | declaVarLocal declaVar
              ;
 
-listParamForm: tipoSimp IDEN_ { insTdD() }
+listParamForm: tipoSimp IDEN_ 
+			 { 
+			   $$ = insTdD(-1, $1);
+               if (insTdS($2, PARAMETRO, $1, niv, desp_param, REF_SIMPLE)) {
+                 desp_param -= TALLA_TIPO_SIMPLE;
+               } else {
+                 yyerrorf("Identificador de parámetro <%s> repetido", $2);
+               }
+             }
              | tipoSimp IDEN_ COMA_ listParamForm
-			 {
-               $$ = insTdD($4, $1); 
-               insTdS($2, PARAMETRO, $1, niv, desp_param, -1);
+             {
+               $$ = insTdD($4, $1);
+               if (insTdS($2, PARAMETRO, $1, niv, desp_param, REF_SIMPLE)) {
+                 desp_param -= TALLA_TIPO_SIMPLE;
+               } else {
+                 yyerrorf("Identificador de parámetro <%s> repetido", $2);
+               }
              }
              ;
 
-paramForm:
+paramForm: { $$ = insTdD(-1, T_VACIO); }
          | listParamForm { $$ = $1; } 
          ;
 
 bloque: LLAVA_ declaVarLocal listInst RETURN_ expre PUNTCOMA_ LLAVC_
       ;
 
-declaFunc: tipoSimp IDEN_ PARA_ paramForm PARC_ 
-	 	{
-		   if (!insTdS($2, FUNCION, $1, niv - 1, dvar, $4)) 
-			 yyerrorf("Identificador de función <%s> repetido", $2);
-		}
+declaFunc: tipoSimp IDEN_ 
+		 {
+	   		niv = 1; // nivel local de la función
+	   		dvar_copy = dvar;
+	   		dvar = 0;
+	   		desp_param = -(TALLA_SEGENLANCES + TALLA_TIPO_SIMPLE);
+	   		cargaContexto(niv);
+	 	 } 
+			PARA_ paramForm PARC_ 
+		 {
+		   	if (!insTdS($2, FUNCION, $1, niv - 1, dvar, $5)) {
+				yyerrorf("Identificador de función <%s> repetido", $2);
+			}
+		 }
 		 bloque 
+		 {
+		   if (verTdS) mostrarTdS();
+		   descargaContexto(niv);
+		   niv = 0;
+		   dvar = dvar_copy;
+		 }
          ;
 
 listInst:
@@ -400,25 +419,34 @@ expreSufi: const { $$ = $1.tipo; }
            $$ = s.t;
          }
          | IDEN_ PARA_ paramAct PARC_
-         {
+		 {
            SIMB s = obtTdS($1);
            if (s.t == T_ERROR) {
              yyerrorf("<%s> no ha sido declarado", $1);
+             $$ = T_ERROR;
+           } else {
+             if (!cmpDom(s.ref, $3)) {
+               yyerrorf("Error en los parámetros de la llamada a <%s>", $1);
+             }
+             $$ = s.t;
            }
          }
          ;
 
-listParamAct: expre { $$ = $1; }
+listParamAct: expre
+            {
+              $$ = insTdD(-1, $1);
+            }
             | expre COMA_ listParamAct
             {
               // En C, la coma es un operador que devuelve
               // el valor de su lado derecho.
               // No aplica conversión de tipos de por sí.
-              $$ = $3;
+              $$ = insTdD($3, $1);
             }
             ;
 
-paramAct: { $$ = T_VACIO; }
+paramAct: { $$ = insTdD(-1, T_VACIO); }
         | listParamAct { $$ = $1; }
         ;
 
