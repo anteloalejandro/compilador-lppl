@@ -125,7 +125,7 @@ declaVar: tipoSimp IDEN_ PUNTCOMA_
           // reserva espacio para los elementos dado su tipo.
           int ref = insTdA($1, elems);
 
-          if (insTdS($2, VARIABLE, $1, niv, dvar, ref)) {
+          if (insTdS($2, VARIABLE, T_ARRAY, niv, dvar, ref)) {
             dvar += TALLA_TIPO_SIMPLE * elems;
           } else {
             yyerrorf("Identificador <%s> repetido", $2);
@@ -292,18 +292,19 @@ expre: expreLogic { $$ = $1; }
           yyerrorf("Identificador <%s> no declarado", $1);
         } else if (s.t != T_ARRAY) {
           yyerrorf("<%s> no es de tipo T_ARRAY", $1);
-        }
+        } else {
+          if ($3 != T_ENTERO) {
+            yyerrorf("El subíndice de <%s> debe ser un entero", $1);
+          }
 
-        if ($3 != T_ENTERO) {
-          yyerrorf("El subíndice de <%s> debe ser un entero", $1);
-        }
-        if ($6 != s.t) {
           DIM d = obtTdA(s.ref);
-          yyerrorf("<%s> es un %s[], se ha intentado asignar un %s",
-            $1,
-            string_tipo[d.telem],
-            string_tipo[s.t]
-          );
+          if ($6 != d.telem) {
+            yyerrorf("<%s> es un %s[], se ha intentado asignar un %s",
+              $1,
+              string_tipo[d.telem],
+              string_tipo[$6]
+            );
+          }
         }
 
         // NOTA: No sabemos el valor de expre en este punto,
