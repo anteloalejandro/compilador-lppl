@@ -83,11 +83,11 @@ Los tests `b00.c` y `b05.c` han tenido que ser modificados porque, aparentemente
 
 **Reglas semánticas**
  
-- [ ] Todas las variables y funciones deben declararse antes de ser utilizadas.
+- [x] Todas las variables y funciones deben declararse antes de ser utilizadas.
 - [x] Debe haber una función, y solo una, con el nombre main. Esta función determinará el inicio y el fin en la ejecución del programa.
-- [ ] La información de los parámetros se situará, en la Tabla de Símbolos, en orden inverso a su declaración.
-- [ ] El paso de parámetros se hace siempre por valor.
-- [ ] Se admite la recursividad en las funciones.
+- [x] La información de los parámetros se situará, en la Tabla de Símbolos, en orden inverso a su declaración.
+- [x] El paso de parámetros se hace siempre por valor.
+- [x] Se admite la recursividad en las funciones.
 - [x] El compilador solo trabaja con constantes enteras. Si el analizador léxico encuentra una constante real en el programa debe devolver su valor entero truncado
 - [x] El tipo lógico, `bool`, se representa numéricamente como un entero: con el valor 0 para el caso falso y 1 para el caso verdadero.
 - [x] No existe conversión de tipos entre `int` y `bool`.
