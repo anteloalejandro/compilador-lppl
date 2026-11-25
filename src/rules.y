@@ -106,7 +106,7 @@ declaVar: tipoSimp IDEN_ PUNTCOMA_
         }
         | tipoSimp IDEN_ ASIG_ const PUNTCOMA_
         {
-          comprueba_tipo($1, $4.tipo);
+          comprueba_tipo("declaVar", $1, $4.tipo);
 
           if (insTdS($2, VARIABLE, $1, niv, dvar, REF_SIMPLE)) {
             dvar += TALLA_TIPO_SIMPLE;
@@ -282,7 +282,7 @@ expre: expreLogic { $$ = $1; }
        if (s.t == T_ERROR) {
          yyerrorf("Identificador <%s> no declarado", $1);
        } else {
-         comprueba_tipo(s.t, $3);
+         comprueba_tipo("expre", s.t, $3);
        }
 
       $$ = s.t;
@@ -326,8 +326,8 @@ expre: expreLogic { $$ = $1; }
 expreLogic: expreIgual { $$ = $1; }
           | expreLogic opLogic expreIgual
           {
-            comprueba_tipo_l(T_LOGICO, $1);
-            comprueba_tipo_r(T_LOGICO, $3);
+            comprueba_tipo_l("expreLogic", T_LOGICO, $1);
+            comprueba_tipo_r("expreLogic", T_LOGICO, $3);
 
             $$ = T_LOGICO;
           }
@@ -338,11 +338,11 @@ expreIgual: expreRel { $$ = $1; }
           {
             // expreIgual puede ser tipo entero si viene de expreRel,
             // o tipo lógico por por expreRel o la segunda producción.
-            comprueba_tipo_simple_l($1);
+            comprueba_tipo_simple_l("exprIgual", $1);
 
             // expreRel puede ser tipo entero si viene de expreAd,
             // o tipo lógico por la segunda producción.
-            comprueba_tipo_simple_r($3);
+            comprueba_tipo_simple_r("exprIgual", $3);
 
             if ($1 != $3) {
               yyerror("Sólo se pueden comparar dos expresiones con el mismo tipo");
@@ -357,8 +357,8 @@ expreRel: expreAd { $$ = $1; }
         {
           // NOTA: Si consideramos que se pueden comparar
           // dos bool también, habría que cambiar esto.
-          comprueba_tipo_l(T_ENTERO, $1);
-          comprueba_tipo_r(T_ENTERO, $3);
+          comprueba_tipo_l("expreRel", T_ENTERO, $1);
+          comprueba_tipo_r("expreRel", T_ENTERO, $3);
 
           $$ = T_LOGICO;
         }
@@ -367,8 +367,8 @@ expreRel: expreAd { $$ = $1; }
 expreAd: expreMul { $$ = $1; }
        | expreAd opAd expreMul
        {
-         comprueba_tipo_l(T_ENTERO, $1);
-         comprueba_tipo_r(T_ENTERO, $3);
+         comprueba_tipo_l("expreAd", T_ENTERO, $1);
+         comprueba_tipo_r("expreAd", T_ENTERO, $3);
 
          $$ = T_ENTERO;
        }
@@ -377,8 +377,8 @@ expreAd: expreMul { $$ = $1; }
 expreMul: expreUna { $$ = $1; }
         | expreMul opMul expreUna
         {
-          comprueba_tipo_l(T_ENTERO, $1);
-          comprueba_tipo_r(T_ENTERO, $3);
+          comprueba_tipo_l("expreMul", T_ENTERO, $1);
+          comprueba_tipo_r("expreMul", T_ENTERO, $3);
 
           $$ = T_ENTERO;
         }
@@ -389,7 +389,7 @@ expreUna: expreSufi { $$ = $1; }
         {
           // expreUna puede ser ENTERO (+/- expreUna)
           // o LOGICO (! expreUna)
-          comprueba_tipo($1, $2);
+          comprueba_tipo("expreUna", $1, $2);
           $$ = $1;
         }
         ;

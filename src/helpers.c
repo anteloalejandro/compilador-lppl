@@ -26,12 +26,13 @@ void yyerrorf(const char *restrict format, ...) {
   yyerror(buf);
 }
 
-bool comprueba_tipo_pref(char * pref, int t_esperado, int t_obtenido) {
+bool comprueba_tipo_pref(char *pref, char *extra, int t_esperado, int t_obtenido) {
   if (t_esperado == t_obtenido) return true;
 
   yyerrorf(
-    "%sEsperaba %s -- %s obtenido",
+    "%s%s → Esperaba %s -- %s obtenido",
     pref,
+    extra,
     string_tipo[t_esperado],
     string_tipo[t_obtenido]
   );
@@ -39,24 +40,25 @@ bool comprueba_tipo_pref(char * pref, int t_esperado, int t_obtenido) {
   return false;
 }
 
-bool comprueba_tipo(int t_esperado, int t_obtenido) {
-  return comprueba_tipo_pref("", t_esperado, t_obtenido);
+bool comprueba_tipo(char * expr, int t_esperado, int t_obtenido) {
+  return comprueba_tipo_pref(expr, "", t_esperado, t_obtenido);
 }
 
-bool comprueba_tipo_l(int t_esperado, int t_obtenido) {
-  return comprueba_tipo_pref("LHS: ", t_esperado, t_obtenido);
+bool comprueba_tipo_l(char * expr, int t_esperado, int t_obtenido) {
+  return comprueba_tipo_pref(expr, " (lhs)", t_esperado, t_obtenido);
 }
 
-bool comprueba_tipo_r(int t_esperado, int t_obtenido) {
-  return comprueba_tipo_pref("RHS: ", t_esperado, t_obtenido);
+bool comprueba_tipo_r(char * expr, int t_esperado, int t_obtenido) {
+  return comprueba_tipo_pref(expr, " (rhs)", t_esperado, t_obtenido);
 }
 
-bool comprueba_tipo_simple_pref(char * pref, int tipo) {
+bool comprueba_tipo_simple_pref(char * pref, char * extra, int tipo) {
   if (tipo == T_LOGICO || tipo == T_ENTERO) return true;
 
   yyerrorf(
-    "%sEsperaba %s o %s -- %s obtenido",
+    "%s%s → Esperaba %s o %s -- %s obtenido",
     pref,
+    extra,
     string_tipo[T_LOGICO],
     string_tipo[T_ENTERO],
     string_tipo[tipo]
@@ -65,16 +67,12 @@ bool comprueba_tipo_simple_pref(char * pref, int tipo) {
   return false;
 }
 
-bool comprueba_tipo_simple(int tipo) {
-  return comprueba_tipo_simple_pref("", tipo);
+bool comprueba_tipo_simple_l(char * expr, int tipo) {
+  return comprueba_tipo_simple_pref(expr, " (lhs)", tipo);
 }
 
-bool comprueba_tipo_simple_l(int tipo) {
-  return comprueba_tipo_simple_pref("LHS: ", tipo);
-}
-
-bool comprueba_tipo_simple_r(int tipo) {
-  return comprueba_tipo_simple_pref("RHS: ", tipo);
+bool comprueba_tipo_simple_r(char * expr, int tipo) {
+  return comprueba_tipo_simple_pref(expr, " (rhs)", tipo);
 }
 
 int reconcilia_tipos(int tipo_a, int tipo_b) {
