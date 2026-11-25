@@ -4,6 +4,7 @@
 #include "header.h"
 /* Archivo generado a partir de rules.y, contiene los tokens que vamos a usar */
 #include "rules.h"
+#include "helpers.h"
 
 #define yield(x, ...) { if (verbosidad) ECHO; __VA_ARGS__; return (x); }
 %}
@@ -20,7 +21,7 @@ entero      {digito}+
 real        ({entero}(,|\.)|{entero}?(,|\.){entero})
 /* "... el símbolo cte, que representa una constante numérica entera sin signo..." */
 constante   ({entero}|{real})
-letra       [a-zA-Z\-]
+letra       [a-zA-Z-]
 iden        [a-zA-Z]+({digito}|{letra})*
 
 /* NOTA: Las palabras clave DEBEN ir antes para hacer matching primero */
@@ -65,8 +66,8 @@ iden        [a-zA-Z]+({digito}|{letra})*
 
 {delimitador}   { if (verbosidad) ECHO; }
 {comentario}    { if (verbosidad) ECHO; }
-{iden}          { yield (IDEN_, yylval.iden = yytext);     }
+{iden}          { yield (IDEN_, yylval.iden = strdup(yytext)); }
 {constante}     { yield (CTE_, yylval.cte = atoi(yytext)); }
 
-.               { yyerror("Caracter desconocido"); }
+.               { yyerrorf("Carácter desconocido: '%s'", yytext); }
 %%

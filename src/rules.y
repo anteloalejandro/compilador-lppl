@@ -228,6 +228,7 @@ Greater: GREATER_ inst
 
 instExpre: expre PUNTCOMA_
          | PUNTCOMA_
+         | error PUNTCOMA_
          ;
 
 instEntSal: READ_ PARA_ IDEN_ PARC_ PUNTCOMA_
