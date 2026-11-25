@@ -4,7 +4,7 @@ OBJDIR = build
 BINDIR = bin
 
 OPTS = -Wall
-LIBS = -lfl -lm -Llib -ltds
+LIBS = -lfl -Llib -ltds -lgci
 # busca todos los archivos .c de src/
 SRCS = $(wildcard $(SRCDIR)/*.c)
 # "path substitute" reemplaza los src/*.c por build/*.o

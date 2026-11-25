@@ -69,35 +69,6 @@ Los tests `b00.c` y `b05.c` han tenido que ser modificados porque, aparentemente
 - `b00.c` usaba `_` para los identificadores, cuando en nuestra definición usan `-`.
 - `b05.c` no separaba `y-x`, que según como está definido en nuestra gramática, corresponde con un identificador. Se ha sustituido por `y - x`, que sí se reconoce como una resta.
 
-## POR HACER
-
-**Ignoramos todo lo relacionado con la Tabla de Dominio (`TdD`) porque falta verlo en teoría.**
-
-**A tener en cuenta**
-
-- Al declarar funciones, hay que insertarlas en la tabla de símbolos y tabla de dominio.
-- Al declarar variables simples, hay que insertarlas en la tabla de símbolos con referencia REF_SIMPLE.
-- Al declarar arrays, hay que insertarlas primero en la tabla de arrays (`TdA`), que devolverá una referencia. Al insertar en la tabla de símbolos, se usa esa referencia.
-- Las funciones tienen que insertarse en la TdS antes de analizar el cuerpo para poder hacer recursión. **(Quizás)**.
-- Hay que tener en las variables locales `niv` (para el nivel de anidamiento) y `dvar` (desplazamiento de variables) **no se actualizan solas**. Hay que actualizarlas cada vez que añadamos un ámbito / variable.
-
-**Reglas semánticas**
- 
-- [x] Todas las variables y funciones deben declararse antes de ser utilizadas.
-- [x] Debe haber una función, y solo una, con el nombre main. Esta función determinará el inicio y el fin en la ejecución del programa.
-- [x] La información de los parámetros se situará, en la Tabla de Símbolos, en orden inverso a su declaración.
-- [x] El paso de parámetros se hace siempre por valor.
-- [x] Se admite la recursividad en las funciones.
-- [x] El compilador solo trabaja con constantes enteras. Si el analizador léxico encuentra una constante real en el programa debe devolver su valor entero truncado
-- [x] El tipo lógico, `bool`, se representa numéricamente como un entero: con el valor 0 para el caso falso y 1 para el caso verdadero.
-- [x] No existe conversión de tipos entre `int` y `bool`.
-- [x] La talla de los tipos simples, entero y lógico, debe definirse mediante la constante `TALLA_TIPO_SIMPLE` en el fichero `header.h` del directorio `include`.
-- [x] Los índices de los vectores van de 0 a `cte-1`, siendo cte el número de elementos definido en su declaración. ~~El número de elementos de un vector debe ser un entero positivo.~~
-- [x] En las instrucciones read y write el identificador y la expresión respectivamente deben ser de tipo entero.
-- [x] La instrucción `for` es similar a la del C. Las expresiones opcionales son expresiones, pudiendo no aparecer explíıcitamente, y la expresión debe ser de tipo lógico y debe aparecer explícitamente.
-- [x] La expresión de la instrucción `if-else` debe ser de tipo lógico.
-- [x] La instrucción `switch` evalúa el valor del identificador y selecciona una de las tres posibles ramas de ejecución. Si el valor del identificador es menor que cero se ejecuta la rama `Less`; si es igual a cero se ejecuta la rama `Equal`; y si es mayor que cero se ejecuta la rama `Greater`.
-
 ## Autores
 
 - Alejandro Amor Torres
