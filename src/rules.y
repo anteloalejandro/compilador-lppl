@@ -438,10 +438,18 @@ expreSufi: const { $$ = $1.tipo; }
            if (s.t == T_ERROR) {
              yyerrorf("<%s> no ha sido declarado", $1);
              $$ = T_ERROR;
+           } else if (s.ref == -1 || s.t == T_ARRAY) {
+             // NOTA: Si $1 es el nombre de una variable ya insertada en la TdS,
+             // s.t no es T_ERROR pero s.ref es -1. En ese caso, obtTdD devuelve
+             // el INF de LA FUNCIÓN ACTUAL (caller).
+             // Del mismo modo, $1 podría ser un T_ARRAY, en cuyo caso s.ref no
+             // será -1, pero no será válido.
+             yyerrorf("<%s> no es una función", $1);
+             $$ = T_ERROR;
            } else {
              INF inf = obtTdD(s.ref);
              if (inf.tipo == T_ERROR) {
-               yyerrorf("<%s> no es una función", $1);
+               yyerrorf("ALGO HA IDO MAL: %s es una función, pero no está en la TdD.", $1);
                $$ = T_ERROR;
              } else if (!cmpDom(s.ref, $3)) {
                yyerrorf("Error en los parámetros de la llamada a <%s>", $1);
@@ -459,9 +467,6 @@ listParamAct: expre
             }
             | expre COMA_ listParamAct
             {
-              // En C, la coma es un operador que devuelve
-              // el valor de su lado derecho.
-              // No aplica conversión de tipos de por sí.
               $$ = insTdD($3, $1);
             }
             ;

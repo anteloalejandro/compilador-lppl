@@ -10,7 +10,7 @@ int F (int x, int y)
 { 
    bool a[27]; int b; 
 
-  return y-x;
+  return y - x;
 }
 
 int c[27];
